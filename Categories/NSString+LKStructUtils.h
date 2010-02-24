@@ -16,7 +16,7 @@
  
  */
 
-#import <Cocoa/Cocoa.h>
+#import <CoreFoundation/CoreFoundation.h>
 
 
 @interface NSString (LKStructUtils) 
@@ -25,9 +25,9 @@
 + (NSString *)stringWithBool:(BOOL)inValue;
 
 //	Structure handling utils
-+ (NSString *)stringWithSize:(NSSize)size;
-+ (NSString *)stringWithPoint:(NSPoint)point;
-+ (NSString *)stringWithRect:(NSRect)rect;
-+ (NSString *)stringWithRange:(NSRange)range;
++ (NSString *)stringWithSize:(CGSize)size;
++ (NSString *)stringWithPoint:(CGPoint)point;
++ (NSString *)stringWithRect:(CGRect)rect;
++ (NSString *)stringWithRange:(CGRange)range;
 
 @end
