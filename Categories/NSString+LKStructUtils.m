@@ -43,7 +43,7 @@
 		[NSString stringWithSize:rect.size]];
 }
 
-+ (NSString *)stringWithRange:(CGRange)range {
++ (NSString *)stringWithRange:(NSRange)range {
 	return [NSString stringWithFormat:@"[loc:%u,len:%u]", range.location, range.length];
 }
 

@@ -28,6 +28,6 @@
 + (NSString *)stringWithSize:(CGSize)size;
 + (NSString *)stringWithPoint:(CGPoint)point;
 + (NSString *)stringWithRect:(CGRect)rect;
-+ (NSString *)stringWithRange:(CGRange)range;
++ (NSString *)stringWithRange:(NSRange)range;
 
 @end
