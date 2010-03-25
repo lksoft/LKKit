@@ -44,6 +44,90 @@ CGMutablePathRef	LKCreateRoundedRectPath(CGRect desiredRect, CGFloat cornerRadiu
 	return path;
 }
 
+void	LKDrawGradientRoundedRectPath(CGContextRef context, NSDictionary *values) {
+	
+	//	Handle two error cases
+	NSCAssert(context != nil, @"LKDrawGradientRoundedRectPath() Cannot draw gradient RoundedRect without context");
+	if (values == nil) {
+		return;
+	}
+	
+	//	Make assertions
+	NSCAssert([values valueForKey:kGRRRectValueKey] != nil, @"LKDrawGradientRoundedRectPath() Cannot draw gradient RoundedRect without rect");
+	NSCAssert([values valueForKey:kGRRGradientColorListValueKey] != nil, @"LKDrawGradientRoundedRectPath() Cannot draw gradient RoundedRect without the Gradient Color List");
+	//	Get values from the dictionary
+	CGRect	boundingRect = [[values valueForKey:kGRRRectValueKey] CGRectValue];
+	NSArray	*colorList = (NSArray *)[values valueForKey:kGRRGradientColorListValueKey];
+	UIColor	*strokeColor = (UIColor *)[values valueForKey:kGRRStrokeColorValueKey];
+	CGFloat	lineWidth = [[values valueForKey:kGRRLineWidthValueKey] floatValue];
+	CGFloat	cornerRadius = [[values valueForKey:kGRRCornerRadiusValueKey] floatValue];
+	//	Set defaults for any of these that are missing
+	if ([values valueForKey:kGRRStrokeColorValueKey] == nil) {
+		strokeColor = [UIColor blackColor];
+	}
+	if ([values valueForKey:kGRRLineWidthValueKey] == nil) {
+		lineWidth = 1.0f;
+	}
+	if ([values valueForKey:kGRRCornerRadiusValueKey] == nil) {
+		cornerRadius = 4.0f;
+	}
+	
+	//	Create the path for the rounded rect
+	CGMutablePathRef	roundedPath = LKCreateRoundedRectPath(boundingRect, cornerRadius, lineWidth);
+	
+	//	Clip to that path
+	CGContextAddPath(context, roundedPath);
+	CGContextClosePath(context);
+	CGContextClip(context);
+	
+	//	Define the gradient to draw as background of the rounded rect
+	CGColorSpaceRef	myColorspace = CGColorGetColorSpace(((UIColor *)[(NSDictionary *)[colorList objectAtIndex:0] valueForKey:kGRRGradientColorItem]).CGColor);
+
+	//	Allocate our memory
+	CGFloat			*locations = NSZoneMalloc(NSDefaultMallocZone(), sizeof(CGFloat) * colorList.count);
+	CGFloat			*components = NSZoneMalloc(NSDefaultMallocZone(), sizeof(CGFloat) * colorList.count * CGColorSpaceGetNumberOfComponents(myColorspace));
+
+	//	Pointers to do math with
+	CGFloat			*locationPointer = locations;
+	CGFloat			*componentPointer = components;
+	
+	//	Go through the gradient color list and build our arrays
+	for (NSDictionary *gradientItem in colorList) {
+		
+		//	Set the location for this gradient item
+		*locationPointer = [[gradientItem valueForKey:kGRRGradientLocationItem] floatValue];locationPointer++;
+		
+		//	Then set the color info
+		CGColorRef		aColor = ((UIColor *)[gradientItem valueForKey:kGRRGradientColorItem]).CGColor;
+		const	CGFloat	*rgba = CGColorGetComponents(aColor);
+		for (NSUInteger i = 0; i < CGColorGetNumberOfComponents(aColor); i++, componentPointer++) {
+			*componentPointer = rgba[i];
+		}
+	}
+	
+	//	Create and Draw the gradient from top center to bottom center
+	CGGradientRef	myGradient = CGGradientCreateWithColorComponents(myColorspace, components, locations, colorList.count);
+	CGPoint topCenter = CGPointMake(CGRectGetMidX(boundingRect), CGRectGetMinY(boundingRect));
+	CGPoint midCenter = CGPointMake(CGRectGetMidX(boundingRect), CGRectGetMaxY(boundingRect));
+	CGContextDrawLinearGradient(context, myGradient, topCenter, midCenter, 0);
+	
+	//	Set the line color
+	CGContextSetStrokeColorWithColor(context, strokeColor.CGColor);
+	
+	//	Set the line width to use and draw the stroke after re-adding the path
+	CGContextSetLineWidth(context, lineWidth);
+	CGContextAddPath(context, roundedPath);
+	CGContextDrawPath(context, kCGPathStroke);
+	
+	//	Release the CG objects created
+	CGGradientRelease(myGradient);
+	CGPathRelease(roundedPath);
+	
+	//	Release the arrays that I created
+	NSZoneFree(NSDefaultMallocZone(), (void *)locations);
+	NSZoneFree(NSDefaultMallocZone(), (void *)components);
+	
+}
 
 CGRect	LKRectBySettingX(CGRect originalRect, CGFloat newX) {
 	return CGRectMake(newX, originalRect.origin.y, originalRect.size.width, originalRect.size.height);
