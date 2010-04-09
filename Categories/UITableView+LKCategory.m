@@ -1,6 +1,6 @@
 //
 //  UITableView+LKCategory.m
-//  Cavity
+//  LKKit
 //
 //  Created by Scott Little on 09/03/10.
 //  Copyright 2010 Little Known Software. All rights reserved.
