@@ -1,0 +1,345 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		D257E263134F675A000F2C16 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D257E262134F675A000F2C16 /* Foundation.framework */; };
+		D257E26B134F675A000F2C16 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D257E269134F675A000F2C16 /* InfoPlist.strings */; };
+		D257E26E134F675A000F2C16 /* KitTests.h in Resources */ = {isa = PBXBuildFile; fileRef = D257E26D134F675A000F2C16 /* KitTests.h */; };
+		D257E270134F675A000F2C16 /* KitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D257E26F134F675A000F2C16 /* KitTests.m */; };
+		D257E275134F67F1000F2C16 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D257E274134F67F1000F2C16 /* CoreGraphics.framework */; };
+		D257E277134F67FE000F2C16 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D257E276134F67FE000F2C16 /* UIKit.framework */; };
+		D257E289134F690E000F2C16 /* NSString+LKStructUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = D257E283134F690E000F2C16 /* NSString+LKStructUtils.m */; };
+		D257E28A134F690E000F2C16 /* UITableView+LKCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = D257E285134F690E000F2C16 /* UITableView+LKCategory.m */; };
+		D257E28B134F690E000F2C16 /* LKCGDrawing.m in Sources */ = {isa = PBXBuildFile; fileRef = D257E288134F690E000F2C16 /* LKCGDrawing.m */; };
+		D257E28F134F6A0D000F2C16 /* lk-warnings.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = D257E28E134F6A0D000F2C16 /* lk-warnings.xcconfig */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		D257E25D134F675A000F2C16 /* KitTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KitTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D257E262134F675A000F2C16 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		D257E268134F675A000F2C16 /* KitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "KitTests-Info.plist"; sourceTree = "<group>"; };
+		D257E26A134F675A000F2C16 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		D257E26C134F675A000F2C16 /* KitTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "KitTests-Prefix.pch"; sourceTree = "<group>"; };
+		D257E26D134F675A000F2C16 /* KitTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KitTests.h; sourceTree = "<group>"; };
+		D257E26F134F675A000F2C16 /* KitTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KitTests.m; sourceTree = "<group>"; };
+		D257E274134F67F1000F2C16 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/System/Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
+		D257E276134F67FE000F2C16 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		D257E282134F690E000F2C16 /* NSString+LKStructUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+LKStructUtils.h"; sourceTree = "<group>"; };
+		D257E283134F690E000F2C16 /* NSString+LKStructUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+LKStructUtils.m"; sourceTree = "<group>"; };
+		D257E284134F690E000F2C16 /* UITableView+LKCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+LKCategory.h"; sourceTree = "<group>"; };
+		D257E285134F690E000F2C16 /* UITableView+LKCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+LKCategory.m"; sourceTree = "<group>"; };
+		D257E287134F690E000F2C16 /* LKCGDrawing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LKCGDrawing.h; sourceTree = "<group>"; };
+		D257E288134F690E000F2C16 /* LKCGDrawing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LKCGDrawing.m; sourceTree = "<group>"; };
+		D257E28E134F6A0D000F2C16 /* lk-warnings.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "lk-warnings.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D257E259134F675A000F2C16 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D257E277134F67FE000F2C16 /* UIKit.framework in Frameworks */,
+				D257E275134F67F1000F2C16 /* CoreGraphics.framework in Frameworks */,
+				D257E263134F675A000F2C16 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		D257E24B134F66E8000F2C16 = {
+			isa = PBXGroup;
+			children = (
+				D257E278134F6832000F2C16 /* Files */,
+				D257E266134F675A000F2C16 /* KitTests */,
+				D257E28D134F6A0D000F2C16 /* Project */,
+				D257E25F134F675A000F2C16 /* Frameworks */,
+				D257E25E134F675A000F2C16 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D257E25E134F675A000F2C16 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D257E25D134F675A000F2C16 /* KitTests.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D257E25F134F675A000F2C16 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D257E262134F675A000F2C16 /* Foundation.framework */,
+				D257E276134F67FE000F2C16 /* UIKit.framework */,
+				D257E274134F67F1000F2C16 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D257E266134F675A000F2C16 /* KitTests */ = {
+			isa = PBXGroup;
+			children = (
+				D257E26D134F675A000F2C16 /* KitTests.h */,
+				D257E26F134F675A000F2C16 /* KitTests.m */,
+				D257E267134F675A000F2C16 /* Supporting Files */,
+			);
+			path = KitTests;
+			sourceTree = "<group>";
+		};
+		D257E267134F675A000F2C16 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				D257E268134F675A000F2C16 /* KitTests-Info.plist */,
+				D257E269134F675A000F2C16 /* InfoPlist.strings */,
+				D257E26C134F675A000F2C16 /* KitTests-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D257E278134F6832000F2C16 /* Files */ = {
+			isa = PBXGroup;
+			children = (
+				D257E281134F690E000F2C16 /* Categories */,
+				D257E286134F690E000F2C16 /* Helpers */,
+				D257E28C134F693B000F2C16 /* TestClasses */,
+			);
+			name = Files;
+			sourceTree = "<group>";
+		};
+		D257E281134F690E000F2C16 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				D257E282134F690E000F2C16 /* NSString+LKStructUtils.h */,
+				D257E283134F690E000F2C16 /* NSString+LKStructUtils.m */,
+				D257E284134F690E000F2C16 /* UITableView+LKCategory.h */,
+				D257E285134F690E000F2C16 /* UITableView+LKCategory.m */,
+			);
+			path = Categories;
+			sourceTree = "<group>";
+		};
+		D257E286134F690E000F2C16 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				D257E287134F690E000F2C16 /* LKCGDrawing.h */,
+				D257E288134F690E000F2C16 /* LKCGDrawing.m */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		D257E28C134F693B000F2C16 /* TestClasses */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = TestClasses;
+			sourceTree = "<group>";
+		};
+		D257E28D134F6A0D000F2C16 /* Project */ = {
+			isa = PBXGroup;
+			children = (
+				D257E28E134F6A0D000F2C16 /* lk-warnings.xcconfig */,
+			);
+			path = Project;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D257E25C134F675A000F2C16 /* KitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D257E271134F675A000F2C16 /* Build configuration list for PBXNativeTarget "KitTests" */;
+			buildPhases = (
+				D257E258134F675A000F2C16 /* Sources */,
+				D257E259134F675A000F2C16 /* Frameworks */,
+				D257E25A134F675A000F2C16 /* Resources */,
+				D257E25B134F675A000F2C16 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = KitTests;
+			productName = KitTests;
+			productReference = D257E25D134F675A000F2C16 /* KitTests.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D257E24D134F66E8000F2C16 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				ORGANIZATIONNAME = "Little Known Software";
+			};
+			buildConfigurationList = D257E250134F66E8000F2C16 /* Build configuration list for PBXProject "LKKit" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = D257E24B134F66E8000F2C16;
+			productRefGroup = D257E25E134F675A000F2C16 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D257E25C134F675A000F2C16 /* KitTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D257E25A134F675A000F2C16 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D257E26B134F675A000F2C16 /* InfoPlist.strings in Resources */,
+				D257E26E134F675A000F2C16 /* KitTests.h in Resources */,
+				D257E28F134F6A0D000F2C16 /* lk-warnings.xcconfig in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		D257E25B134F675A000F2C16 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D257E258134F675A000F2C16 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D257E270134F675A000F2C16 /* KitTests.m in Sources */,
+				D257E289134F690E000F2C16 /* NSString+LKStructUtils.m in Sources */,
+				D257E28A134F690E000F2C16 /* UITableView+LKCategory.m in Sources */,
+				D257E28B134F690E000F2C16 /* LKCGDrawing.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		D257E269134F675A000F2C16 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D257E26A134F675A000F2C16 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		D257E252134F66E8000F2C16 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D257E28E134F6A0D000F2C16 /* lk-warnings.xcconfig */;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		D257E253134F66E8000F2C16 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D257E28E134F6A0D000F2C16 /* lk-warnings.xcconfig */;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		D257E272134F675A000F2C16 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "KitTests/KitTests-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "KitTests/KitTests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SenTestingKit,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		D257E273134F675A000F2C16 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "KitTests/KitTests-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "KitTests/KitTests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SenTestingKit,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D257E250134F66E8000F2C16 /* Build configuration list for PBXProject "LKKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D257E252134F66E8000F2C16 /* Debug */,
+				D257E253134F66E8000F2C16 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D257E271134F675A000F2C16 /* Build configuration list for PBXNativeTarget "KitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D257E272134F675A000F2C16 /* Debug */,
+				D257E273134F675A000F2C16 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D257E24D134F66E8000F2C16 /* Project object */;
+}
