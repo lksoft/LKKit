@@ -10,8 +10,18 @@
 
 
 @interface LKCoreDataTestCase : SenTestCase {
-@private
-    
+
+	NSManagedObjectContext	*context;
+	
 }
+
+@property	(nonatomic, retain)	NSManagedObjectContext	*context;
+
+- (NSManagedObject *)objectWithName:(NSString *)nameValue forEntity:(NSString *)entityName;
+- (NSManagedObject *)objectWithValue:(NSString *)value forKey:(NSString *)key forEntity:(NSString *)entityName;
+
+- (NSManagedObject *)objectWithName:(NSString *)nameValue forEntity:(NSString *)entityName inContext:(NSManagedObjectContext *)context;
+- (NSManagedObject *)objectWithValue:(NSString *)value forKey:(NSString *)key forEntity:(NSString *)entityName inContext:(NSManagedObjectContext *)context;
+- (BOOL)set:(NSSet *)aSet containsValue:(NSObject *)aValue forKey:(NSString *)aKey;
 
 @end
