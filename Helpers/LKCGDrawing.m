@@ -23,10 +23,10 @@ CGMutablePathRef	LKCreateRoundedRectPath(CGRect desiredRect, CGFloat cornerRadiu
     CGFloat height = CGRectGetHeight(rectToDraw);
 	
     // Make sure corner radius isn't larger than half the shorter side
-    if (radius > width/2.0)
-        radius = width/2.0;
-    if (radius > height/2.0)
-        radius = height/2.0;    
+    if (radius > width/2.0f)
+        radius = width/2.0f;
+    if (radius > height/2.0f)
+        radius = height/2.0f;    
     
     CGFloat minx = CGRectGetMinX(rectToDraw);
     CGFloat midx = CGRectGetMidX(rectToDraw);
