@@ -3,5 +3,10 @@
 //
 
 #ifdef __OBJC__
+
 	#import <UIKit/UIKit.h>
+	#import <CoreData/CoreData.h>
+
+	#import "LKPCHInclude.h"
+
 #endif

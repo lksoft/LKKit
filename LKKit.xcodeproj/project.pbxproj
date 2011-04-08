@@ -9,14 +9,16 @@
 /* Begin PBXBuildFile section */
 		D257E263134F675A000F2C16 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D257E262134F675A000F2C16 /* Foundation.framework */; };
 		D257E26B134F675A000F2C16 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D257E269134F675A000F2C16 /* InfoPlist.strings */; };
-		D257E26E134F675A000F2C16 /* KitTests.h in Resources */ = {isa = PBXBuildFile; fileRef = D257E26D134F675A000F2C16 /* KitTests.h */; };
-		D257E270134F675A000F2C16 /* KitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D257E26F134F675A000F2C16 /* KitTests.m */; };
+		D257E26E134F675A000F2C16 /* DrawingTests.h in Resources */ = {isa = PBXBuildFile; fileRef = D257E26D134F675A000F2C16 /* DrawingTests.h */; };
+		D257E270134F675A000F2C16 /* DrawingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D257E26F134F675A000F2C16 /* DrawingTests.m */; };
 		D257E275134F67F1000F2C16 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D257E274134F67F1000F2C16 /* CoreGraphics.framework */; };
 		D257E277134F67FE000F2C16 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D257E276134F67FE000F2C16 /* UIKit.framework */; };
 		D257E289134F690E000F2C16 /* NSString+LKStructUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = D257E283134F690E000F2C16 /* NSString+LKStructUtils.m */; };
 		D257E28A134F690E000F2C16 /* UITableView+LKCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = D257E285134F690E000F2C16 /* UITableView+LKCategory.m */; };
 		D257E28B134F690E000F2C16 /* LKCGDrawing.m in Sources */ = {isa = PBXBuildFile; fileRef = D257E288134F690E000F2C16 /* LKCGDrawing.m */; };
 		D257E28F134F6A0D000F2C16 /* lk-warnings.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = D257E28E134F6A0D000F2C16 /* lk-warnings.xcconfig */; };
+		D257E295134F72F7000F2C16 /* LKCoreDataTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = D257E294134F72F7000F2C16 /* LKCoreDataTestCase.m */; };
+		D257E298134F7715000F2C16 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D257E297134F7715000F2C16 /* CoreData.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,8 +27,8 @@
 		D257E268134F675A000F2C16 /* KitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "KitTests-Info.plist"; sourceTree = "<group>"; };
 		D257E26A134F675A000F2C16 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		D257E26C134F675A000F2C16 /* KitTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "KitTests-Prefix.pch"; sourceTree = "<group>"; };
-		D257E26D134F675A000F2C16 /* KitTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KitTests.h; sourceTree = "<group>"; };
-		D257E26F134F675A000F2C16 /* KitTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KitTests.m; sourceTree = "<group>"; };
+		D257E26D134F675A000F2C16 /* DrawingTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DrawingTests.h; sourceTree = "<group>"; };
+		D257E26F134F675A000F2C16 /* DrawingTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DrawingTests.m; sourceTree = "<group>"; };
 		D257E274134F67F1000F2C16 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/System/Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
 		D257E276134F67FE000F2C16 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		D257E282134F690E000F2C16 /* NSString+LKStructUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+LKStructUtils.h"; sourceTree = "<group>"; };
@@ -36,6 +38,10 @@
 		D257E287134F690E000F2C16 /* LKCGDrawing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LKCGDrawing.h; sourceTree = "<group>"; };
 		D257E288134F690E000F2C16 /* LKCGDrawing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LKCGDrawing.m; sourceTree = "<group>"; };
 		D257E28E134F6A0D000F2C16 /* lk-warnings.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "lk-warnings.xcconfig"; sourceTree = "<group>"; };
+		D257E293134F72F7000F2C16 /* LKCoreDataTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LKCoreDataTestCase.h; sourceTree = "<group>"; };
+		D257E294134F72F7000F2C16 /* LKCoreDataTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LKCoreDataTestCase.m; sourceTree = "<group>"; };
+		D257E296134F7399000F2C16 /* LKPCHInclude.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LKPCHInclude.h; sourceTree = "<group>"; };
+		D257E297134F7715000F2C16 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/System/Library/Frameworks/CoreData.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +49,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D257E298134F7715000F2C16 /* CoreData.framework in Frameworks */,
 				D257E277134F67FE000F2C16 /* UIKit.framework in Frameworks */,
 				D257E275134F67F1000F2C16 /* CoreGraphics.framework in Frameworks */,
 				D257E263134F675A000F2C16 /* Foundation.framework in Frameworks */,
@@ -74,6 +81,7 @@
 		D257E25F134F675A000F2C16 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D257E297134F7715000F2C16 /* CoreData.framework */,
 				D257E262134F675A000F2C16 /* Foundation.framework */,
 				D257E276134F67FE000F2C16 /* UIKit.framework */,
 				D257E274134F67F1000F2C16 /* CoreGraphics.framework */,
@@ -84,8 +92,8 @@
 		D257E266134F675A000F2C16 /* KitTests */ = {
 			isa = PBXGroup;
 			children = (
-				D257E26D134F675A000F2C16 /* KitTests.h */,
-				D257E26F134F675A000F2C16 /* KitTests.m */,
+				D257E26D134F675A000F2C16 /* DrawingTests.h */,
+				D257E26F134F675A000F2C16 /* DrawingTests.m */,
 				D257E267134F675A000F2C16 /* Supporting Files */,
 			);
 			path = KitTests;
@@ -107,6 +115,7 @@
 				D257E281134F690E000F2C16 /* Categories */,
 				D257E286134F690E000F2C16 /* Helpers */,
 				D257E28C134F693B000F2C16 /* TestClasses */,
+				D257E296134F7399000F2C16 /* LKPCHInclude.h */,
 			);
 			name = Files;
 			sourceTree = "<group>";
@@ -134,6 +143,8 @@
 		D257E28C134F693B000F2C16 /* TestClasses */ = {
 			isa = PBXGroup;
 			children = (
+				D257E293134F72F7000F2C16 /* LKCoreDataTestCase.h */,
+				D257E294134F72F7000F2C16 /* LKCoreDataTestCase.m */,
 			);
 			path = TestClasses;
 			sourceTree = "<group>";
@@ -156,7 +167,6 @@
 				D257E258134F675A000F2C16 /* Sources */,
 				D257E259134F675A000F2C16 /* Frameworks */,
 				D257E25A134F675A000F2C16 /* Resources */,
-				D257E25B134F675A000F2C16 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -198,38 +208,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				D257E26B134F675A000F2C16 /* InfoPlist.strings in Resources */,
-				D257E26E134F675A000F2C16 /* KitTests.h in Resources */,
+				D257E26E134F675A000F2C16 /* DrawingTests.h in Resources */,
 				D257E28F134F6A0D000F2C16 /* lk-warnings.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		D257E25B134F675A000F2C16 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		D257E258134F675A000F2C16 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D257E270134F675A000F2C16 /* KitTests.m in Sources */,
+				D257E270134F675A000F2C16 /* DrawingTests.m in Sources */,
 				D257E289134F690E000F2C16 /* NSString+LKStructUtils.m in Sources */,
 				D257E28A134F690E000F2C16 /* UITableView+LKCategory.m in Sources */,
 				D257E28B134F690E000F2C16 /* LKCGDrawing.m in Sources */,
+				D257E295134F72F7000F2C16 /* LKCoreDataTestCase.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
