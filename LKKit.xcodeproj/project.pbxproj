@@ -19,6 +19,8 @@
 		D257E28F134F6A0D000F2C16 /* lk-warnings.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = D257E28E134F6A0D000F2C16 /* lk-warnings.xcconfig */; };
 		D257E295134F72F7000F2C16 /* LKCoreDataTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = D257E294134F72F7000F2C16 /* LKCoreDataTestCase.m */; };
 		D257E298134F7715000F2C16 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D257E297134F7715000F2C16 /* CoreData.framework */; };
+		D257E2A213507D0B000F2C16 /* NSDate+LKHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = D257E2A113507D0B000F2C16 /* NSDate+LKHelpers.m */; };
+		D257E2A513507DCE000F2C16 /* DateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D257E2A413507DCE000F2C16 /* DateTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +44,10 @@
 		D257E294134F72F7000F2C16 /* LKCoreDataTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LKCoreDataTestCase.m; sourceTree = "<group>"; };
 		D257E296134F7399000F2C16 /* LKPCHInclude.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LKPCHInclude.h; sourceTree = "<group>"; };
 		D257E297134F7715000F2C16 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/System/Library/Frameworks/CoreData.framework; sourceTree = DEVELOPER_DIR; };
+		D257E2A013507D0B000F2C16 /* NSDate+LKHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+LKHelpers.h"; sourceTree = "<group>"; };
+		D257E2A113507D0B000F2C16 /* NSDate+LKHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+LKHelpers.m"; sourceTree = "<group>"; };
+		D257E2A313507DCE000F2C16 /* DateTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DateTests.h; sourceTree = "<group>"; };
+		D257E2A413507DCE000F2C16 /* DateTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DateTests.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +100,8 @@
 			children = (
 				D257E26D134F675A000F2C16 /* DrawingTests.h */,
 				D257E26F134F675A000F2C16 /* DrawingTests.m */,
+				D257E2A313507DCE000F2C16 /* DateTests.h */,
+				D257E2A413507DCE000F2C16 /* DateTests.m */,
 				D257E267134F675A000F2C16 /* Supporting Files */,
 			);
 			path = KitTests;
@@ -127,6 +135,8 @@
 				D257E283134F690E000F2C16 /* NSString+LKStructUtils.m */,
 				D257E284134F690E000F2C16 /* UITableView+LKCategory.h */,
 				D257E285134F690E000F2C16 /* UITableView+LKCategory.m */,
+				D257E2A013507D0B000F2C16 /* NSDate+LKHelpers.h */,
+				D257E2A113507D0B000F2C16 /* NSDate+LKHelpers.m */,
 			);
 			path = Categories;
 			sourceTree = "<group>";
@@ -225,6 +235,8 @@
 				D257E28A134F690E000F2C16 /* UITableView+LKCategory.m in Sources */,
 				D257E28B134F690E000F2C16 /* LKCGDrawing.m in Sources */,
 				D257E295134F72F7000F2C16 /* LKCoreDataTestCase.m in Sources */,
+				D257E2A213507D0B000F2C16 /* NSDate+LKHelpers.m in Sources */,
+				D257E2A513507DCE000F2C16 /* DateTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
