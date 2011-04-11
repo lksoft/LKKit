@@ -21,6 +21,7 @@
 		D257E298134F7715000F2C16 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D257E297134F7715000F2C16 /* CoreData.framework */; };
 		D257E2A213507D0B000F2C16 /* NSDate+LKHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = D257E2A113507D0B000F2C16 /* NSDate+LKHelpers.m */; };
 		D257E2A513507DCE000F2C16 /* DateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D257E2A413507DCE000F2C16 /* DateTests.m */; };
+		D264350A13531408006C7A08 /* NSLocale+LKHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = D264350913531408006C7A08 /* NSLocale+LKHelpers.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +49,8 @@
 		D257E2A113507D0B000F2C16 /* NSDate+LKHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+LKHelpers.m"; sourceTree = "<group>"; };
 		D257E2A313507DCE000F2C16 /* DateTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DateTests.h; sourceTree = "<group>"; };
 		D257E2A413507DCE000F2C16 /* DateTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DateTests.m; sourceTree = "<group>"; };
+		D264350813531408006C7A08 /* NSLocale+LKHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSLocale+LKHelpers.h"; sourceTree = "<group>"; };
+		D264350913531408006C7A08 /* NSLocale+LKHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSLocale+LKHelpers.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,6 +140,8 @@
 				D257E285134F690E000F2C16 /* UITableView+LKCategory.m */,
 				D257E2A013507D0B000F2C16 /* NSDate+LKHelpers.h */,
 				D257E2A113507D0B000F2C16 /* NSDate+LKHelpers.m */,
+				D264350813531408006C7A08 /* NSLocale+LKHelpers.h */,
+				D264350913531408006C7A08 /* NSLocale+LKHelpers.m */,
 			);
 			path = Categories;
 			sourceTree = "<group>";
@@ -237,6 +242,7 @@
 				D257E295134F72F7000F2C16 /* LKCoreDataTestCase.m in Sources */,
 				D257E2A213507D0B000F2C16 /* NSDate+LKHelpers.m in Sources */,
 				D257E2A513507DCE000F2C16 /* DateTests.m in Sources */,
+				D264350A13531408006C7A08 /* NSLocale+LKHelpers.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
