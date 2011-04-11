@@ -8,12 +8,13 @@
 
 #import "DateTests.h"
 #import "NSDate+LKHelpers.h"
+#import "NSLocale+LKHelpers.h"
 
 @implementation DateTests
 
-#pragma mark - Tests
+#pragma mark - Date Tests
 
-- (void)testEarlierThan {
+- (void)test001_EarlierThan {
 	
 	NSDate	*earlyDate = [NSDate date];
 	NSDate	*lateDate = [NSDate dateWithTimeIntervalSinceNow:600.0f];
@@ -21,7 +22,7 @@
 	STAssertTrue([earlyDate isEarlierThanDate:lateDate], @"Early:%@  Late:%@", earlyDate, lateDate);
 }
 
-- (void)testLaterThan {
+- (void)test002_LaterThan {
 	
 	NSDate	*earlyDate = [NSDate date];
 	NSDate	*lateDate = [NSDate dateWithTimeIntervalSinceNow:600.0f];
@@ -29,12 +30,28 @@
 	STAssertTrue([lateDate isLaterThanDate:earlyDate], @"Early:%@  Late:%@", earlyDate, lateDate);
 }
 
-- (void)testEarlierThan_EXPECTEDFAIL {
+- (void)test003_EarlierThan_EXPECTEDFAIL {
 	
 	NSDate	*earlyDate = [NSDate date];
 	NSDate	*lateDate = [NSDate dateWithTimeIntervalSinceNow:600.0f];
 	
 	STAssertTrue([lateDate isEarlierThanDate:earlyDate], @"Early:%@  Late:%@", earlyDate, lateDate);
+}
+
+#pragma mark - Locale Tests
+
+- (void)test004_LocaleHasAMPM_USA {
+	NSLocale	*usaLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+	
+	STAssertFalse([usaLocale timeIs24HourFormat], @"USA locale doesn't show time as 12 hour");
+	[usaLocale release];
+}
+
+- (void)test005_LocaleHasAMPM_France {
+	NSLocale	*frenchLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"fr_FR"];
+	
+	STAssertTrue([frenchLocale timeIs24HourFormat], @"French locale doesn't show time as 24 hour");
+	[frenchLocale release];
 }
 
 #pragma mark - Test Admin
