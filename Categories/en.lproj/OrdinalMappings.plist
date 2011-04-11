@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>1</key>
+	<dict>
+		<key>ordinal</key>
+		<string>st</string>
+		<key>usage</key>
+		<string>all</string>
+	</dict>
+	<key>11</key>
+	<dict>
+		<key>ordinal</key>
+		<string>th</string>
+		<key>usage</key>
+		<string>all</string>
+	</dict>
+	<key>12</key>
+	<dict>
+		<key>ordinal</key>
+		<string>th</string>
+		<key>usage</key>
+		<string>all</string>
+	</dict>
+	<key>13</key>
+	<dict>
+		<key>ordinal</key>
+		<string>th</string>
+		<key>usage</key>
+		<string>all</string>
+	</dict>
+	<key>2</key>
+	<dict>
+		<key>ordinal</key>
+		<string>nd</string>
+		<key>usage</key>
+		<string>all</string>
+	</dict>
+	<key>3</key>
+	<dict>
+		<key>ordinal</key>
+		<string>rd</string>
+		<key>usage</key>
+		<string>all</string>
+	</dict>
+	<key>default</key>
+	<dict>
+		<key>ordinal</key>
+		<string></string>
+		<key>usage</key>
+		<string>all</string>
+	</dict>
+	<key>default-en</key>
+	<dict>
+		<key>ordinal</key>
+		<string>th</string>
+		<key>usage</key>
+		<string>all</string>
+	</dict>
+</dict>
+</plist>

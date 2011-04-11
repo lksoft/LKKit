@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>1</key>
+	<dict>
+		<key>ordinal</key>
+		<string>uni</string>
+		<key>usage</key>
+		<string>unique</string>
+	</dict>
+	<key>13</key>
+	<dict>
+		<key>ordinal</key>
+		<string>uni2</string>
+		<key>usage</key>
+		<string>unique</string>
+	</dict>
+	<key>2</key>
+	<dict>
+		<key>ordinal</key>
+		<string>sec</string>
+		<key>usage</key>
+		<string>all</string>
+	</dict>
+	<key>3</key>
+	<dict>
+		<key>ordinal</key>
+		<string>rd</string>
+		<key>usage</key>
+		<string>all</string>
+	</dict>
+	<key>4</key>
+	<dict>
+		<key>ordinal-F</key>
+		<string>the</string>
+		<key>ordinal-M</key>
+		<string>th</string>
+		<key>ordinal-N</key>
+		<string>tho</string>
+		<key>usage</key>
+		<string>all</string>
+	</dict>
+	<key>8</key>
+	<dict>
+		<key>ordinal-F-case1</key>
+		<string>ace</string>
+		<key>ordinal-M-case1</key>
+		<string>oce</string>
+		<key>ordinal-M-case2</key>
+		<string>oc2</string>
+		<key>ordinal-N-case3</key>
+		<string>ic3</string>
+		<key>ordinal-N-case5</key>
+		<string>i</string>
+		<key>usage</key>
+		<string>all</string>
+	</dict>
+	<key>default-haw</key>
+	<dict>
+		<key>ordinal</key>
+		<string>th</string>
+		<key>usage</key>
+		<string>all</string>
+	</dict>
+</dict>
+</plist>
