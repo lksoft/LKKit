@@ -25,6 +25,21 @@
 		D264351113533D3C006C7A08 /* NSString+LKHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = D264351013533D3C006C7A08 /* NSString+LKHelper.m */; };
 		D264351413534A56006C7A08 /* OrdinalMappings.plist in Resources */ = {isa = PBXBuildFile; fileRef = D264351613534A56006C7A08 /* OrdinalMappings.plist */; };
 		D264351A13534BFF006C7A08 /* StringTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D264351913534BFF006C7A08 /* StringTests.m */; };
+		D26436361354B45A006C7A08 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D257E276134F67FE000F2C16 /* UIKit.framework */; };
+		D26436371354B45A006C7A08 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D257E262134F675A000F2C16 /* Foundation.framework */; };
+		D26436381354B45A006C7A08 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D257E274134F67F1000F2C16 /* CoreGraphics.framework */; };
+		D264363E1354B45A006C7A08 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D264363C1354B45A006C7A08 /* InfoPlist.strings */; };
+		D26436521354B48D006C7A08 /* GHUnitIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D26436511354B48D006C7A08 /* GHUnitIOS.framework */; };
+		D26436551354B4DE006C7A08 /* GHUnitiOSMain.m in Sources */ = {isa = PBXBuildFile; fileRef = D26436541354B4DE006C7A08 /* GHUnitiOSMain.m */; };
+		D264365A1354B63E006C7A08 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D26436591354B63E006C7A08 /* CoreData.framework */; };
+		D264365B1354B654006C7A08 /* NSDate+LKHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = D257E2A113507D0B000F2C16 /* NSDate+LKHelpers.m */; };
+		D264365C1354B658006C7A08 /* DateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D257E2A413507DCE000F2C16 /* DateTests.m */; };
+		D264365D1354B7B3006C7A08 /* NSString+LKHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = D264351013533D3C006C7A08 /* NSString+LKHelper.m */; };
+		D264365E1354B7B3006C7A08 /* NSLocale+LKHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = D264350913531408006C7A08 /* NSLocale+LKHelpers.m */; };
+		D264365F1354B7B8006C7A08 /* OrdinalMappings.plist in Resources */ = {isa = PBXBuildFile; fileRef = D264351613534A56006C7A08 /* OrdinalMappings.plist */; };
+		D26436601354B7CD006C7A08 /* DrawingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D257E26F134F675A000F2C16 /* DrawingTests.m */; };
+		D26436611354B7CD006C7A08 /* StringTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D264351913534BFF006C7A08 /* StringTests.m */; };
+		D26436621354B852006C7A08 /* LKCGDrawing.m in Sources */ = {isa = PBXBuildFile; fileRef = D257E288134F690E000F2C16 /* LKCGDrawing.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,6 +76,13 @@
 		D264351813534BFF006C7A08 /* StringTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringTests.h; sourceTree = "<group>"; };
 		D264351913534BFF006C7A08 /* StringTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StringTests.m; sourceTree = "<group>"; };
 		D264351B1353B2BC006C7A08 /* haw */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = haw; path = haw.lproj/OrdinalMappings.plist; sourceTree = "<group>"; };
+		D26436341354B45A006C7A08 /* GHTester.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GHTester.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D264363B1354B45A006C7A08 /* GHTester-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GHTester-Info.plist"; sourceTree = "<group>"; };
+		D264363D1354B45A006C7A08 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		D264363F1354B45A006C7A08 /* GHTester-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GHTester-Prefix.pch"; sourceTree = "<group>"; };
+		D26436511354B48D006C7A08 /* GHUnitIOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GHUnitIOS.framework; path = ../../../../../../Library/Frameworks/GHUnitIOS.framework; sourceTree = "<group>"; };
+		D26436541354B4DE006C7A08 /* GHUnitiOSMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GHUnitiOSMain.m; sourceTree = "<group>"; };
+		D26436591354B63E006C7A08 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/System/Library/Frameworks/CoreData.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +97,18 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D26436311354B45A006C7A08 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D264365A1354B63E006C7A08 /* CoreData.framework in Frameworks */,
+				D26436521354B48D006C7A08 /* GHUnitIOS.framework in Frameworks */,
+				D26436361354B45A006C7A08 /* UIKit.framework in Frameworks */,
+				D26436371354B45A006C7A08 /* Foundation.framework in Frameworks */,
+				D26436381354B45A006C7A08 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -82,6 +116,7 @@
 			isa = PBXGroup;
 			children = (
 				D257E278134F6832000F2C16 /* Files */,
+				D26436391354B45A006C7A08 /* GHTester */,
 				D257E266134F675A000F2C16 /* KitTests */,
 				D257E28D134F6A0D000F2C16 /* Project */,
 				D257E25F134F675A000F2C16 /* Frameworks */,
@@ -93,6 +128,7 @@
 			isa = PBXGroup;
 			children = (
 				D257E25D134F675A000F2C16 /* KitTests.octest */,
+				D26436341354B45A006C7A08 /* GHTester.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -187,6 +223,27 @@
 			path = Project;
 			sourceTree = "<group>";
 		};
+		D26436391354B45A006C7A08 /* GHTester */ = {
+			isa = PBXGroup;
+			children = (
+				D26436591354B63E006C7A08 /* CoreData.framework */,
+				D26436511354B48D006C7A08 /* GHUnitIOS.framework */,
+				D264363A1354B45A006C7A08 /* Supporting Files */,
+				D26436541354B4DE006C7A08 /* GHUnitiOSMain.m */,
+			);
+			path = GHTester;
+			sourceTree = "<group>";
+		};
+		D264363A1354B45A006C7A08 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				D264363B1354B45A006C7A08 /* GHTester-Info.plist */,
+				D264363C1354B45A006C7A08 /* InfoPlist.strings */,
+				D264363F1354B45A006C7A08 /* GHTester-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -206,6 +263,23 @@
 			productName = KitTests;
 			productReference = D257E25D134F675A000F2C16 /* KitTests.octest */;
 			productType = "com.apple.product-type.bundle";
+		};
+		D26436331354B45A006C7A08 /* GHTester */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D264364E1354B45B006C7A08 /* Build configuration list for PBXNativeTarget "GHTester" */;
+			buildPhases = (
+				D26436301354B45A006C7A08 /* Sources */,
+				D26436311354B45A006C7A08 /* Frameworks */,
+				D26436321354B45A006C7A08 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GHTester;
+			productName = GHTester;
+			productReference = D26436341354B45A006C7A08 /* GHTester.app */;
+			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
@@ -230,6 +304,7 @@
 			projectRoot = "";
 			targets = (
 				D257E25C134F675A000F2C16 /* KitTests */,
+				D26436331354B45A006C7A08 /* GHTester */,
 			);
 		};
 /* End PBXProject section */
@@ -243,6 +318,15 @@
 				D257E26E134F675A000F2C16 /* DrawingTests.h in Resources */,
 				D257E28F134F6A0D000F2C16 /* lk-warnings.xcconfig in Resources */,
 				D264351413534A56006C7A08 /* OrdinalMappings.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D26436321354B45A006C7A08 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D264363E1354B45A006C7A08 /* InfoPlist.strings in Resources */,
+				D264365F1354B7B8006C7A08 /* OrdinalMappings.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -266,6 +350,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D26436301354B45A006C7A08 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D26436551354B4DE006C7A08 /* GHUnitiOSMain.m in Sources */,
+				D264365B1354B654006C7A08 /* NSDate+LKHelpers.m in Sources */,
+				D264365C1354B658006C7A08 /* DateTests.m in Sources */,
+				D264365D1354B7B3006C7A08 /* NSString+LKHelper.m in Sources */,
+				D264365E1354B7B3006C7A08 /* NSLocale+LKHelpers.m in Sources */,
+				D26436601354B7CD006C7A08 /* DrawingTests.m in Sources */,
+				D26436611354B7CD006C7A08 /* StringTests.m in Sources */,
+				D26436621354B852006C7A08 /* LKCGDrawing.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
@@ -285,6 +384,14 @@
 				D264351B1353B2BC006C7A08 /* haw */,
 			);
 			name = OrdinalMappings.plist;
+			sourceTree = "<group>";
+		};
+		D264363C1354B45A006C7A08 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D264363D1354B45A006C7A08 /* en */,
+			);
+			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -364,6 +471,78 @@
 			};
 			name = Release;
 		};
+		D264364F1354B45B006C7A08 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../../../../Library/Frameworks\"",
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "GHTester/GHTester-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "GHTester/GHTester-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+					"-framework",
+					SenTestingKit,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		D26436501354B45B006C7A08 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../../../../Library/Frameworks\"",
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "GHTester/GHTester-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "GHTester/GHTester-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+					"-framework",
+					SenTestingKit,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -384,6 +563,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		D264364E1354B45B006C7A08 /* Build configuration list for PBXNativeTarget "GHTester" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D264364F1354B45B006C7A08 /* Debug */,
+				D26436501354B45B006C7A08 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
