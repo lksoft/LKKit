@@ -40,6 +40,7 @@
 		D26436601354B7CD006C7A08 /* DrawingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D257E26F134F675A000F2C16 /* DrawingTests.m */; };
 		D26436611354B7CD006C7A08 /* StringTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D264351913534BFF006C7A08 /* StringTests.m */; };
 		D26436621354B852006C7A08 /* LKCGDrawing.m in Sources */ = {isa = PBXBuildFile; fileRef = D257E288134F690E000F2C16 /* LKCGDrawing.m */; };
+		D2C9AE6F13A02FBC00CD9998 /* DOMNode+LKHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = D2C9AE6E13A02FBC00CD9998 /* DOMNode+LKHelpers.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -83,6 +84,8 @@
 		D26436511354B48D006C7A08 /* GHUnitIOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GHUnitIOS.framework; path = ../../../../../../Library/Frameworks/GHUnitIOS.framework; sourceTree = "<group>"; };
 		D26436541354B4DE006C7A08 /* GHUnitiOSMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GHUnitiOSMain.m; sourceTree = "<group>"; };
 		D26436591354B63E006C7A08 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/System/Library/Frameworks/CoreData.framework; sourceTree = DEVELOPER_DIR; };
+		D2C9AE6D13A02FBC00CD9998 /* DOMNode+LKHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DOMNode+LKHelpers.h"; sourceTree = "<group>"; };
+		D2C9AE6E13A02FBC00CD9998 /* DOMNode+LKHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DOMNode+LKHelpers.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -193,6 +196,8 @@
 				D257E2A113507D0B000F2C16 /* NSDate+LKHelpers.m */,
 				D264350813531408006C7A08 /* NSLocale+LKHelpers.h */,
 				D264350913531408006C7A08 /* NSLocale+LKHelpers.m */,
+				D2C9AE6D13A02FBC00CD9998 /* DOMNode+LKHelpers.h */,
+				D2C9AE6E13A02FBC00CD9998 /* DOMNode+LKHelpers.m */,
 			);
 			path = Categories;
 			sourceTree = "<group>";
@@ -347,6 +352,7 @@
 				D264350A13531408006C7A08 /* NSLocale+LKHelpers.m in Sources */,
 				D264351113533D3C006C7A08 /* NSString+LKHelper.m in Sources */,
 				D264351A13534BFF006C7A08 /* StringTests.m in Sources */,
+				D2C9AE6F13A02FBC00CD9998 /* DOMNode+LKHelpers.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -571,6 +577,7 @@
 				D26436501354B45B006C7A08 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
