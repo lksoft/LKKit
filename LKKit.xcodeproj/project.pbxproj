@@ -29,7 +29,6 @@
 		D26436371354B45A006C7A08 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D257E262134F675A000F2C16 /* Foundation.framework */; };
 		D26436381354B45A006C7A08 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D257E274134F67F1000F2C16 /* CoreGraphics.framework */; };
 		D264363E1354B45A006C7A08 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D264363C1354B45A006C7A08 /* InfoPlist.strings */; };
-		D26436521354B48D006C7A08 /* GHUnitIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D26436511354B48D006C7A08 /* GHUnitIOS.framework */; };
 		D26436551354B4DE006C7A08 /* GHUnitiOSMain.m in Sources */ = {isa = PBXBuildFile; fileRef = D26436541354B4DE006C7A08 /* GHUnitiOSMain.m */; };
 		D264365A1354B63E006C7A08 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D26436591354B63E006C7A08 /* CoreData.framework */; };
 		D264365B1354B654006C7A08 /* NSDate+LKHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = D257E2A113507D0B000F2C16 /* NSDate+LKHelpers.m */; };
@@ -40,7 +39,11 @@
 		D26436601354B7CD006C7A08 /* DrawingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D257E26F134F675A000F2C16 /* DrawingTests.m */; };
 		D26436611354B7CD006C7A08 /* StringTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D264351913534BFF006C7A08 /* StringTests.m */; };
 		D26436621354B852006C7A08 /* LKCGDrawing.m in Sources */ = {isa = PBXBuildFile; fileRef = D257E288134F690E000F2C16 /* LKCGDrawing.m */; };
+		D2B5FBBE13D5B64400630112 /* LKLogHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = D2B5FBBD13D5B64400630112 /* LKLogHelper.m */; };
+		D2B5FBBF13D5B64400630112 /* LKLogHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = D2B5FBBD13D5B64400630112 /* LKLogHelper.m */; };
+		D2B5FBC313D5C0D700630112 /* LKLogHelperTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = D2B5FBC213D5C0D700630112 /* LKLogHelperTestCase.m */; };
 		D2C9AE6F13A02FBC00CD9998 /* DOMNode+LKHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = D2C9AE6E13A02FBC00CD9998 /* DOMNode+LKHelpers.m */; };
+		D2F71D1413AFEB0700082BC9 /* GHUnitIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2F71D1313AFEB0700082BC9 /* GHUnitIOS.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -81,11 +84,15 @@
 		D264363B1354B45A006C7A08 /* GHTester-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GHTester-Info.plist"; sourceTree = "<group>"; };
 		D264363D1354B45A006C7A08 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		D264363F1354B45A006C7A08 /* GHTester-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GHTester-Prefix.pch"; sourceTree = "<group>"; };
-		D26436511354B48D006C7A08 /* GHUnitIOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GHUnitIOS.framework; path = ../../../../../../Library/Frameworks/GHUnitIOS.framework; sourceTree = "<group>"; };
 		D26436541354B4DE006C7A08 /* GHUnitiOSMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GHUnitiOSMain.m; sourceTree = "<group>"; };
 		D26436591354B63E006C7A08 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/System/Library/Frameworks/CoreData.framework; sourceTree = DEVELOPER_DIR; };
+		D2B5FBBC13D5B64400630112 /* LKLogHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LKLogHelper.h; sourceTree = "<group>"; };
+		D2B5FBBD13D5B64400630112 /* LKLogHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LKLogHelper.m; sourceTree = "<group>"; };
+		D2B5FBC113D5C0D700630112 /* LKLogHelperTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LKLogHelperTestCase.h; sourceTree = "<group>"; };
+		D2B5FBC213D5C0D700630112 /* LKLogHelperTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LKLogHelperTestCase.m; sourceTree = "<group>"; };
 		D2C9AE6D13A02FBC00CD9998 /* DOMNode+LKHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DOMNode+LKHelpers.h"; sourceTree = "<group>"; };
 		D2C9AE6E13A02FBC00CD9998 /* DOMNode+LKHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DOMNode+LKHelpers.m"; sourceTree = "<group>"; };
+		D2F71D1313AFEB0700082BC9 /* GHUnitIOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GHUnitIOS.framework; path = ../../../Library/Frameworks/GHUnitIOS.framework; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,8 +111,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D2F71D1413AFEB0700082BC9 /* GHUnitIOS.framework in Frameworks */,
 				D264365A1354B63E006C7A08 /* CoreData.framework in Frameworks */,
-				D26436521354B48D006C7A08 /* GHUnitIOS.framework in Frameworks */,
 				D26436361354B45A006C7A08 /* UIKit.framework in Frameworks */,
 				D26436371354B45A006C7A08 /* Foundation.framework in Frameworks */,
 				D26436381354B45A006C7A08 /* CoreGraphics.framework in Frameworks */,
@@ -207,6 +214,8 @@
 			children = (
 				D257E287134F690E000F2C16 /* LKCGDrawing.h */,
 				D257E288134F690E000F2C16 /* LKCGDrawing.m */,
+				D2B5FBBC13D5B64400630112 /* LKLogHelper.h */,
+				D2B5FBBD13D5B64400630112 /* LKLogHelper.m */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -216,6 +225,8 @@
 			children = (
 				D257E293134F72F7000F2C16 /* LKCoreDataTestCase.h */,
 				D257E294134F72F7000F2C16 /* LKCoreDataTestCase.m */,
+				D2B5FBC113D5C0D700630112 /* LKLogHelperTestCase.h */,
+				D2B5FBC213D5C0D700630112 /* LKLogHelperTestCase.m */,
 			);
 			path = TestClasses;
 			sourceTree = "<group>";
@@ -232,7 +243,7 @@
 			isa = PBXGroup;
 			children = (
 				D26436591354B63E006C7A08 /* CoreData.framework */,
-				D26436511354B48D006C7A08 /* GHUnitIOS.framework */,
+				D2F71D1313AFEB0700082BC9 /* GHUnitIOS.framework */,
 				D264363A1354B45A006C7A08 /* Supporting Files */,
 				D26436541354B4DE006C7A08 /* GHUnitiOSMain.m */,
 			);
@@ -353,6 +364,7 @@
 				D264351113533D3C006C7A08 /* NSString+LKHelper.m in Sources */,
 				D264351A13534BFF006C7A08 /* StringTests.m in Sources */,
 				D2C9AE6F13A02FBC00CD9998 /* DOMNode+LKHelpers.m in Sources */,
+				D2B5FBBE13D5B64400630112 /* LKLogHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -368,6 +380,8 @@
 				D26436601354B7CD006C7A08 /* DrawingTests.m in Sources */,
 				D26436611354B7CD006C7A08 /* StringTests.m in Sources */,
 				D26436621354B852006C7A08 /* LKCGDrawing.m in Sources */,
+				D2B5FBBF13D5B64400630112 /* LKLogHelper.m in Sources */,
+				D2B5FBC313D5C0D700630112 /* LKLogHelperTestCase.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -407,6 +421,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D257E28E134F6A0D000F2C16 /* lk-warnings.xcconfig */;
 			buildSettings = {
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -414,6 +429,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D257E28E134F6A0D000F2C16 /* lk-warnings.xcconfig */;
 			buildSettings = {
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
@@ -445,7 +461,6 @@
 					SenTestingKit,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = octest;
 			};
 			name = Debug;
@@ -472,7 +487,6 @@
 					SenTestingKit,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = octest;
 			};
 			name = Release;
@@ -481,7 +495,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -489,6 +502,7 @@
 					"\"$(SRCROOT)/../../../../../Library/Frameworks\"",
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+					"\"$(SRCROOT)/../../../Library/Frameworks\"",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -497,7 +511,7 @@
 				GCC_PREFIX_HEADER = "GHTester/GHTester-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "GHTester/GHTester-Info.plist";
@@ -509,7 +523,6 @@
 					SenTestingKit,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -518,7 +531,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -526,11 +538,12 @@
 					"\"$(SRCROOT)/../../../../../Library/Frameworks\"",
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+					"\"$(SRCROOT)/../../../Library/Frameworks\"",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "GHTester/GHTester-Prefix.pch";
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = "GHTester/GHTester-Info.plist";
@@ -543,7 +556,6 @@
 					SenTestingKit,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};
