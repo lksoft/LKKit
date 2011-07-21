@@ -13,7 +13,6 @@
 	Copyright (c) 2010 Little Known Software. All rights reserved.
  
  */
-#pragma mark $Revision: 1.1 $
 
 #import "NSString+LKStructUtils.h"
 
@@ -22,9 +21,14 @@
 
 #pragma mark BOOLEAN
 
-+ (NSString *)stringWithBool:(BOOL)inValue
-{
++ (NSString *)stringWithBool:(BOOL)inValue {
 	return [NSString stringWithString:(inValue ? @"YES" : @"NO")];
+}
+
+#pragma mark Integer
+
++ (NSString *)stringWithInteger:(NSInteger)inValue {
+	return [[NSNumber numberWithInteger:inValue] stringValue];
 }
 
 

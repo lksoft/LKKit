@@ -23,6 +23,7 @@
 
 //  boolean handling utils
 + (NSString *)stringWithBool:(BOOL)inValue;
++ (NSString *)stringWithInteger:(NSInteger)inValue;
 
 //	Structure handling utils
 + (NSString *)stringWithSize:(CGSize)size;
