@@ -54,6 +54,11 @@ long getOSVersion();
 #define TOOL_ID kLKToolKeyUndefined
 #endif
 
+//	If another LKLog is defined, undef it
+#ifdef	LKLog
+#undef	LKLog
+#endif
+
 //	these defines hide the actual calls that include the correct local TOOL_ID
 //		if the logging is turned off make this more efficient, by doing nothing
 #ifndef DEBUG_OUTPUT_OFF

@@ -30,8 +30,8 @@ static NSMutableDictionary	*kLKToolConfigurations = nil;
 
 
 - (id)init {
-	
-	if (self = [super init]) {
+	self = [super init];
+	if (self) {
 		kLKToolConfigurations = [[NSMutableDictionary alloc] init];
 	}
 	return self;
@@ -56,8 +56,8 @@ static NSMutableDictionary	*kLKToolConfigurations = nil;
 
 - (NSInteger)logLevelForTool:(NSString *)toolID {
 	
-	int		workingLevel = kLKNotInited;
-	BOOL	debugging = NO;
+	NSInteger	workingLevel = kLKNotInited;
+	BOOL		debugging = NO;
 	
 	//	try to get the dictionary and see if it is configured...
 	NSMutableDictionary	*defaultSet = [self getDefaultSetForID:toolID];
@@ -138,7 +138,7 @@ static NSMutableDictionary	*kLKToolConfigurations = nil;
 	[defaultSet setObject:[NSNumber numberWithBool:active] forKey:kLKConfiguredDebuggingKey];
 	[defaultSet setObject:[NSNumber numberWithInteger:level] forKey:kLKConfiguredLogLevelKey];
 	
-	NSLog([NSString stringWithFormat:@"[LKLogHelper]setting configuration: debugging-%@  logLevel-%d", (active?@"YES":@"NO"), level]);
+	NSLog(@"[LKLogHelper]setting configuration: debugging-%@  logLevel-%d", (active?@"YES":@"NO"), (int)level);
 	
 	//	then make this toolID the default one
 	[self setDefaultID:toolID];
