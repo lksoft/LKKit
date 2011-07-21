@@ -42,6 +42,7 @@
 		D2B5FBBE13D5B64400630112 /* LKLogHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = D2B5FBBD13D5B64400630112 /* LKLogHelper.m */; };
 		D2B5FBBF13D5B64400630112 /* LKLogHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = D2B5FBBD13D5B64400630112 /* LKLogHelper.m */; };
 		D2B5FBC313D5C0D700630112 /* LKLogHelperTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = D2B5FBC213D5C0D700630112 /* LKLogHelperTestCase.m */; };
+		D2B5FC8A13D88E1000630112 /* NSObject+LKObject.m in Sources */ = {isa = PBXBuildFile; fileRef = D2B5FC8913D88E1000630112 /* NSObject+LKObject.m */; };
 		D2C9AE6F13A02FBC00CD9998 /* DOMNode+LKHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = D2C9AE6E13A02FBC00CD9998 /* DOMNode+LKHelpers.m */; };
 		D2F71D1413AFEB0700082BC9 /* GHUnitIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2F71D1313AFEB0700082BC9 /* GHUnitIOS.framework */; };
 /* End PBXBuildFile section */
@@ -90,6 +91,8 @@
 		D2B5FBBD13D5B64400630112 /* LKLogHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LKLogHelper.m; sourceTree = "<group>"; };
 		D2B5FBC113D5C0D700630112 /* LKLogHelperTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LKLogHelperTestCase.h; sourceTree = "<group>"; };
 		D2B5FBC213D5C0D700630112 /* LKLogHelperTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LKLogHelperTestCase.m; sourceTree = "<group>"; };
+		D2B5FC8813D88E0F00630112 /* NSObject+LKObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+LKObject.h"; sourceTree = "<group>"; };
+		D2B5FC8913D88E1000630112 /* NSObject+LKObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+LKObject.m"; sourceTree = "<group>"; };
 		D2C9AE6D13A02FBC00CD9998 /* DOMNode+LKHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DOMNode+LKHelpers.h"; sourceTree = "<group>"; };
 		D2C9AE6E13A02FBC00CD9998 /* DOMNode+LKHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DOMNode+LKHelpers.m"; sourceTree = "<group>"; };
 		D2F71D1313AFEB0700082BC9 /* GHUnitIOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GHUnitIOS.framework; path = ../../../Library/Frameworks/GHUnitIOS.framework; sourceTree = SOURCE_ROOT; };
@@ -192,6 +195,8 @@
 		D257E281134F690E000F2C16 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				D2B5FC8813D88E0F00630112 /* NSObject+LKObject.h */,
+				D2B5FC8913D88E1000630112 /* NSObject+LKObject.m */,
 				D257E282134F690E000F2C16 /* NSString+LKStructUtils.h */,
 				D257E283134F690E000F2C16 /* NSString+LKStructUtils.m */,
 				D264350F13533D3C006C7A08 /* NSString+LKHelper.h */,
@@ -365,6 +370,7 @@
 				D264351A13534BFF006C7A08 /* StringTests.m in Sources */,
 				D2C9AE6F13A02FBC00CD9998 /* DOMNode+LKHelpers.m in Sources */,
 				D2B5FBBE13D5B64400630112 /* LKLogHelper.m in Sources */,
+				D2B5FC8A13D88E1000630112 /* NSObject+LKObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
