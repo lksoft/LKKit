@@ -128,7 +128,6 @@ static NSMutableDictionary	*kLKToolConfigurations = nil;
 //	this allows the calling tool to set the default values
 - (void)setDefaultActive:(BOOL)active andLogLevel:(NSInteger)level forID:(NSString *)toolID {
 
-	NSLog(@"[LKLogHelper]toolID passed in is:%@", toolID);
 	NSMutableDictionary	*defaultSet = [self getDefaultSetForID:toolID];
 	
 	//	if none was found ignore values
@@ -138,7 +137,7 @@ static NSMutableDictionary	*kLKToolConfigurations = nil;
 	[defaultSet setObject:[NSNumber numberWithBool:active] forKey:kLKConfiguredDebuggingKey];
 	[defaultSet setObject:[NSNumber numberWithInteger:level] forKey:kLKConfiguredLogLevelKey];
 	
-	NSLog(@"[LKLogHelper]setting configuration: debugging-%@  logLevel-%d", (active?@"YES":@"NO"), (int)level);
+	NSLog(@"[LKLogHelper]Setting configuration for %@: debugging-%@  logLevel-%d", toolID, (active?@"YES":@"NO"), (int)level);
 	
 	//	then make this toolID the default one
 	[self setDefaultID:toolID];
@@ -193,15 +192,23 @@ void LKLogV(NSString *aToolID, NSInteger level, BOOL isSecure, NSString *prefix,
 	
 	//	put the file/method information before the format
 	NSMutableString	*newFormat = [NSMutableString string];
-	NSString		*fileName = [[NSString stringWithUTF8String:file] lastPathComponent];
-	NSString		*methodName = [NSString stringWithUTF8String:method];
-	[newFormat appendFormat:@"(%@:%@:%d) ", fileName, methodName, lineNum];
+	NSString		*fileName = nil;
+	NSString		*methodName = nil;
+	if (file) {
+		fileName = [[NSString stringWithUTF8String:file] lastPathComponent];
+	}
+	if (method) {
+		methodName = [NSString stringWithUTF8String:method];
+	}
+	if (fileName || methodName) {
+		[newFormat appendFormat:@"(%@:%@:%d) ", fileName, methodName, lineNum];
+	}
 	[newFormat appendString:format];
 	if (![format hasSuffix:@"\n"]) {
 		[newFormat appendString:@"\n"];
 	}
 	format = newFormat;
-	NSLog(@"Format value is:%@", format);
+//	NSLog(@"Format value is:%@", format);
 	
 	if (logLevel == kLKNotInited) {
 		NSLog(@"[LKLogHelper Error]Debugger not yet initialized!! Outputting raw...");
@@ -229,10 +236,10 @@ void LKInternalLog(NSString *aToolID, NSInteger level, BOOL isSecure, const char
 }
 #endif
 
-void LKInternalInformation(NSString *aToolID, const char *file, int lineNum, const char *method, NSString *format, ...) {
+void LKInternalInformation(NSString *aToolID, NSString *format, ...) {
 	va_list argptr;
 	va_start(argptr, format);
-	LKLogV(aToolID, kLKIgnoreLevel, YES, @"[INFO]:", file, lineNum, method, format, argptr);
+	LKLogV(aToolID, kLKIgnoreLevel, NO, @"[INFO]:", NULL, 0, NULL, format, argptr);
 }
 
 void LKInternalWarning(NSString *aToolID, const char *file, int lineNum, const char *method, NSString *format, ...) {
@@ -273,10 +280,17 @@ NSString	*LKSecureFormat(NSString *format) {
 	//	ensure that it doesn't skip any whitespace
 	[myScan setCharactersToBeSkipped:nil];
 	
+	//	If the format string starts with a '%', set a flag
+	BOOL	startsWithPercent = [format hasPrefix:@"%"];
 	//	look for those '%'s
-	while ([myScan scanUpToString:@"%" intoString:&holder]) {
+	while ([myScan scanUpToString:@"%" intoString:&holder] || startsWithPercent) {
+		//	Immediately switch off that flag
+		startsWithPercent = NO;
+		
 		//	add holder to the newFormat
-		[newFormat appendString:holder];
+		if (holder) {
+			[newFormat appendString:holder];
+		}
 		
 		//	if we are the end, leave
 		if ([myScan isAtEnd]) {

@@ -26,7 +26,7 @@
  *
  *****/
 void LKLogV(NSString *aToolID, NSInteger level, BOOL isSecure, NSString *prefix, const char *file, int lineNum, const char *method, NSString *format, va_list argptr);
-void LKInternalInformation(NSString *aToolID, const char *file, int lineNum, const char *method, NSString *format, ...);
+void LKInternalInformation(NSString *aToolID, NSString *format, ...);
 void LKInternalWarning(NSString *aToolID, const char *file, int lineNum, const char *method, NSString *format, ...);
 void LKInternalError(NSString *aToolID, const char *file, int lineNum, const char *method, NSString *format, ...);
 void LKInternalLog(NSString *aToolID, NSInteger level, BOOL isSecure, const char *file, int lineNum, const char *method, NSString *format, ...);
@@ -72,7 +72,7 @@ long getOSVersion();
 #define LKLog(s, ...)
 #define	LKLogClear(i, s, ...)
 #endif
-#define	LKInfo(s, ...)			LKInternalInformation(TOOL_ID, __FILE__, __LINE__, __PRETTY_FUNCTION__, s, ## __VA_ARGS__)
+#define	LKInfo(s, ...)			LKInternalInformation(TOOL_ID, s, ## __VA_ARGS__)
 #define	LKWarn(s, ...)			LKInternalWarning(TOOL_ID, __FILE__, __LINE__, __PRETTY_FUNCTION__, s, ## __VA_ARGS__)
 #define	LKError(s, ...)			LKInternalError(TOOL_ID, __FILE__, __LINE__, __PRETTY_FUNCTION__, s, ## __VA_ARGS__)
 
