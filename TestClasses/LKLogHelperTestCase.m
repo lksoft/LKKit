@@ -8,7 +8,7 @@
 
 #import "LKLogHelperTestCase.h"
 
-#define TOOL_ID	@"com.littleknownsoftware.tests"
+#define BUNDLE_ID	@"com.littleknownsoftware.tests"
 #import "LKLogHelper.h"
 
 
@@ -31,7 +31,7 @@
 - (void)testSomething {
 	
 	//	Init our logger
-	[[LKLogHelper sharedInstance] setDefaultActive:YES andLogLevel:9 forID:TOOL_ID];
+	[[LKLogHelper sharedInstance] setDefaultActive:YES andLogLevel:9 forID:BUNDLE_ID];
 	
 	//	Get the standard output and flush it
 	NSFileHandle	*stdoutFileHandle = [NSFileHandle fileHandleWithStandardOutput];

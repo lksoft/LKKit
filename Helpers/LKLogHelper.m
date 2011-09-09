@@ -18,10 +18,10 @@ NSString *const kLKtrue = @"true";
 NSString *const kLKfalse = @"false";
 NSString *const kLKQuote = @"\"";
 
-static NSMutableDictionary	*kLKToolConfigurations = nil;
+static NSMutableDictionary	*lkBundleConfigurations = nil;
 
 @interface LKLogHelper ()
-- (NSMutableDictionary *)getDefaultSetForID:(NSString *)toolID;
+- (NSMutableDictionary *)getDefaultSetForID:(NSString *)aBundleID;
 @end
 
 @implementation LKLogHelper
@@ -32,7 +32,7 @@ static NSMutableDictionary	*kLKToolConfigurations = nil;
 - (id)init {
 	self = [super init];
 	if (self) {
-		kLKToolConfigurations = [[NSMutableDictionary alloc] init];
+		lkBundleConfigurations = [[NSMutableDictionary alloc] init];
 	}
 	return self;
 }
@@ -47,20 +47,14 @@ static NSMutableDictionary	*kLKToolConfigurations = nil;
 
 #pragma mark - Log Levels
 
-//  A method to return, using the defaults functionality, the current
-//		application level to use for logging.
-- (NSInteger)currentApplicationLogLevel {
-	return [self logLevelForTool:[self defaultID]];
-}
 
-
-- (NSInteger)logLevelForTool:(NSString *)toolID {
+- (NSInteger)logLevelForBundleID:(NSString *)aBundleID {
 	
 	NSInteger	workingLevel = kLKNotInited;
 	BOOL		debugging = NO;
 	
 	//	try to get the dictionary and see if it is configured...
-	NSMutableDictionary	*defaultSet = [self getDefaultSetForID:toolID];
+	NSMutableDictionary	*defaultSet = [self getDefaultSetForID:aBundleID];
 	if (defaultSet != nil) {
 		
 		//	get the values from the set
@@ -86,49 +80,46 @@ static NSMutableDictionary	*kLKToolConfigurations = nil;
 	return workingLevel;
 }
 
-- (BOOL)debuggingOn {
-	return [self debuggingOnForToolID:[self defaultID]];
+//  A method to return, using the defaults functionality, the current
+//		application level to use for logging.
+- (NSInteger)currentApplicationLogLevel {
+	return [self logLevelForBundleID:[self defaultID]];
 }
 
-- (BOOL)debuggingOnForToolID:(NSString *)aToolID {
-	NSDictionary	*set = [self getDefaultSetForID:aToolID];
+- (BOOL)currentApplicationDebuggingOn {
+	return [self debuggingOnForBundleID:[self defaultID]];
+}
+
+- (BOOL)debuggingOnForBundleID:(NSString *)aBundleID {
+	NSDictionary	*set = [self getDefaultSetForID:aBundleID];
 	return [[set objectForKey:kLKConfiguredDebuggingKey] boolValue];
-}
-
-- (NSInteger)logLevel {
-	return [self logLevelForToolID:[self defaultID]];
-}
-
-- (NSInteger)logLevelForToolID:(NSString *)aToolID {
-	NSDictionary	*set = [self getDefaultSetForID:aToolID];
-	return [[set objectForKey:kLKConfiguredLogLevelKey] integerValue];
 }
 
 #pragma mark - Configuration
 
-//	get the defaultSet for the toolID
-- (NSMutableDictionary *)getDefaultSetForID:(NSString *)toolID {
+//	get the defaultSet for the bundleID
+- (NSMutableDictionary *)getDefaultSetForID:(NSString *)aBundleID {
 
 	//	if no id is passed then ignore
-	if (IsEmpty(toolID)) {
-		NSLog(@"[LKLogHelper ERROR] no toolID was passed to getDefaultSetForID");
+	if (IsEmpty(aBundleID)) {
+		NSLog(@"[LKLogHelper ERROR] no bundleID was passed to getDefaultSetForID");
 		return nil;
 	}
 	
 	//	get any existing set and create a new one if there isn't any
-	NSMutableDictionary	*defaultSet = (NSMutableDictionary *)[kLKToolConfigurations objectForKey:toolID];
+	NSMutableDictionary	*defaultSet = (NSMutableDictionary *)[lkBundleConfigurations objectForKey:aBundleID];
 	if (defaultSet == nil) {
 		defaultSet = [[NSMutableDictionary alloc] init];
-		[kLKToolConfigurations setObject:[defaultSet autorelease] forKey:toolID];
+		[lkBundleConfigurations setObject:[defaultSet autorelease] forKey:aBundleID];
 	}
 	
 	return defaultSet;
 }
 
-//	this allows the calling tool to set the default values
-- (void)setDefaultActive:(BOOL)active andLogLevel:(NSInteger)level forID:(NSString *)toolID {
+//	this allows the calling bundle to set the default values
+- (void)setDefaultActive:(BOOL)active andLogLevel:(NSInteger)level forID:(NSString *)aBundleID {
 
-	NSMutableDictionary	*defaultSet = [self getDefaultSetForID:toolID];
+	NSMutableDictionary	*defaultSet = [self getDefaultSetForID:aBundleID];
 	
 	//	if none was found ignore values
 	if (defaultSet == nil) return;
@@ -137,10 +128,10 @@ static NSMutableDictionary	*kLKToolConfigurations = nil;
 	[defaultSet setObject:[NSNumber numberWithBool:active] forKey:kLKConfiguredDebuggingKey];
 	[defaultSet setObject:[NSNumber numberWithInteger:level] forKey:kLKConfiguredLogLevelKey];
 	
-	NSLog(@"[LKLogHelper]Setting configuration for %@: debugging-%@  logLevel-%d", toolID, (active?@"YES":@"NO"), (int)level);
+	NSLog(@"[LKLogHelper]Setting configuration for %@: debugging-%@  logLevel-%d", aBundleID, (active?@"YES":@"NO"), (int)level);
 	
-	//	then make this toolID the default one
-	[self setDefaultID:toolID];
+	//	then make this bundleID the default one
+	[self setDefaultID:aBundleID];
 }
 
 //	These methods ensure that people calling the methods do not screw up the object
@@ -162,7 +153,7 @@ static NSMutableDictionary	*kLKToolConfigurations = nil;
 @end
 
 
-void LKLogV(NSString *aToolID, NSInteger level, BOOL isSecure, NSString *prefix, const char *file, 
+void LKLogV(NSString *aBundleID, NSInteger level, BOOL isSecure, NSString *prefix, const char *file, 
 			int lineNum, const char *method, NSString *format, va_list argptr) {
 	
 	NSString	*formattedPrefix = prefix;
@@ -170,12 +161,12 @@ void LKLogV(NSString *aToolID, NSInteger level, BOOL isSecure, NSString *prefix,
 	LKLogHelper	*utils = [LKLogHelper sharedInstance];
 	NSInteger	logLevel = 0;
 	
-	//	ensure that the proper tool is called, unless it is not set
-	if ([aToolID isEqualToString:kLKToolKeyUndefined]) {
+	//	ensure that the proper bundle is called, unless it is not set
+	if ([aBundleID isEqualToString:kLKBundleKeyUndefined]) {
 		logLevel = [utils currentApplicationLogLevel];
 	}
 	else {
-		logLevel = [utils logLevelForTool:aToolID];
+		logLevel = [utils logLevelForBundleID:aBundleID];
 	}
 	
 	//	if this is secure output, obscure the format first
@@ -229,32 +220,32 @@ void LKLogV(NSString *aToolID, NSInteger level, BOOL isSecure, NSString *prefix,
 }
 
 #ifndef DEBUG_OUTPUT_OFF
-void LKInternalLog(NSString *aToolID, NSInteger level, BOOL isSecure, const char *file, int lineNum, const char *method, NSString *format, ...) {
+void LKInternalLog(NSString *aBundleID, NSInteger level, BOOL isSecure, const char *file, int lineNum, const char *method, NSString *format, ...) {
 	va_list argptr;
 	va_start(argptr, format);
-	LKLogV(aToolID, level, isSecure, @"[DEBUG:%d]:", file, lineNum, method, format, argptr);
+	LKLogV(aBundleID, level, isSecure, @"[DEBUG:%d]:", file, lineNum, method, format, argptr);
 }
 #endif
 
-void LKInternalInformation(NSString *aToolID, NSString *format, ...) {
+void LKInternalInformation(NSString *aBundleID, NSString *format, ...) {
 	va_list argptr;
 	va_start(argptr, format);
-	LKLogV(aToolID, kLKIgnoreLevel, NO, @"[INFO]:", NULL, 0, NULL, format, argptr);
+	LKLogV(aBundleID, kLKIgnoreLevel, NO, @"[INFO]:", NULL, 0, NULL, format, argptr);
 }
 
-void LKInternalWarning(NSString *aToolID, const char *file, int lineNum, const char *method, NSString *format, ...) {
+void LKInternalWarning(NSString *aBundleID, const char *file, int lineNum, const char *method, NSString *format, ...) {
 #ifndef WARN_OUTPUT_OFF
 	va_list argptr;
 	va_start(argptr, format);
-	LKLogV(aToolID, kLKIgnoreLevel, YES, @"[WARNING]:", file, lineNum, method, format, argptr);
+	LKLogV(aBundleID, kLKIgnoreLevel, YES, @"[WARNING]:", file, lineNum, method, format, argptr);
 #endif
 }
 
-void LKInternalError(NSString *aToolID, const char *file, int lineNum, const char *method, NSString *format, ...) {
+void LKInternalError(NSString *aBundleID, const char *file, int lineNum, const char *method, NSString *format, ...) {
 #ifndef ERROR_OUTPUT_OFF
 	va_list argptr;
 	va_start(argptr, format);
-	LKLogV(aToolID, kLKIgnoreLevel, YES, @"[ERROR]:", file, lineNum, method, format, argptr);
+	LKLogV(aBundleID, kLKIgnoreLevel, YES, @"[ERROR]:", file, lineNum, method, format, argptr);
 #endif
 }
 
