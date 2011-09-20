@@ -25,16 +25,8 @@
  *	Call [[LKLogHelper sharedInstance] setLogsActive:(BOOL) andLogLevel:(NSInteger) forID:(NSString *)] as soon as possible to init
  *
  *****/
-void LKLogV(NSString *aBundleID, NSInteger level, BOOL isSecure, NSString *prefix, const char *file, int lineNum, const char *method, NSString *format, va_list argptr);
-void LKInternalInformation(NSString *aBundleID, NSString *format, ...);
-void LKInternalWarning(NSString *aBundleID, const char *method, NSString *format, ...);
-void LKInternalError(NSString *aBundleID, const char *method, NSString *format, ...);
-void LKInternalLog(NSString *aBundleID, NSInteger level, BOOL isSecure, const char *file, int lineNum, const char *method, NSString *format, ...);
 
-//	utility function for the loggers
-NSString	*LKSecureFormat(NSString *format);
-
-long getOSVersion();
+void LKFormatLog(NSString *aBundleID, NSInteger level, BOOL isSecure, const char *file, int lineNum, const char *method, NSString *prefix, NSString *format, ...);
 
 //  default level used when calling from LKLog (will almost always log)
 #define kLKDefaultLevel	9
@@ -63,17 +55,33 @@ long getOSVersion();
 //		if the logging is turned off make this more efficient, by doing nothing
 #ifndef DEBUG_OUTPUT_OFF
 #define kDebugEnabled			YES
-#define	LKLLog(i, s, ...)		LKInternalLog(BUNDLE_ID, i, YES, __FILE__, __LINE__, __PRETTY_FUNCTION__, s, ## __VA_ARGS__)
-#define	LKLog(s, ...)			LKInternalLog(BUNDLE_ID, kLKDefaultLevel, NO, NULL, 0, __PRETTY_FUNCTION__, s, ## __VA_ARGS__)
+#define	LKZLog(i, s, ...)		LKFormatLog(BUNDLE_ID, i, YES, __FILE__, __LINE__, __PRETTY_FUNCTION__, @"[DEBUG:%d]:", s, ## __VA_ARGS__)
+#define	LKLog(s, ...)			LKFormatLog(BUNDLE_ID, kLKIgnoreLevel, NO, NULL, 0, __PRETTY_FUNCTION__, @"[DEBUG]:", s, ## __VA_ARGS__)
 #else
 #define kDebugEnabled			NO
-#define LKLLog(i, s, ...)
+#define LKZLog(i, s, ...)
 #define LKLog(s, ...)
 #endif
-#define LKSecureLog(s, ...)		LKInternalLog(BUNDLE_ID, kLKDefaultLevel, YES, __FILE__, __LINE__, __PRETTY_FUNCTION__, s, ## __VA_ARGS__)
-#define	LKInfo(s, ...)			LKInternalInformation(BUNDLE_ID, s, ## __VA_ARGS__)
-#define	LKWarn(s, ...)			LKInternalWarning(BUNDLE_ID, __PRETTY_FUNCTION__, s, ## __VA_ARGS__)
-#define	LKError(s, ...)			LKInternalError(BUNDLE_ID, __PRETTY_FUNCTION__, s, ## __VA_ARGS__)
+
+#define LKSecureLog(s, ...)		LKFormatLog(BUNDLE_ID, kLKIgnoreLevel, YES, __FILE__, __LINE__, __PRETTY_FUNCTION__, @"[DEBUG]:", s, ## __VA_ARGS__)
+#define	LKInfo(s, ...)			LKFormatLog(BUNDLE_ID, kLKIgnoreLevel, NO, NULL, 0, NULL,  @"[INFO]:", s, ## __VA_ARGS__)
+#define	LKInfoSecure(s, ...)	LKFormatLog(BUNDLE_ID, kLKIgnoreLevel, YES, NULL, 0, NULL,  @"[INFO]:", s, ## __VA_ARGS__)
+
+#ifndef WARN_OUTPUT_OFF
+#define	LKWarn(s, ...)			LKFormatLog(BUNDLE_ID, kLKIgnoreLevel, NO, NULL, 0, __PRETTY_FUNCTION__,  @"[WARNING]:", s, ## __VA_ARGS__)
+#define	LKWarnSecure(s, ...)	LKFormatLog(BUNDLE_ID, kLKIgnoreLevel, YES, NULL, 0, __PRETTY_FUNCTION__,  @"[WARNING]:", s, ## __VA_ARGS__)
+#else
+#define	LKWarn(s, ...)
+#define	LKWarnSecure(s, ...)
+#endif
+
+#ifndef ERROR_OUTPUT_OFF
+#define	LKError(s, ...)			LKFormatLog(BUNDLE_ID, kLKIgnoreLevel, NO, NULL, 0, __PRETTY_FUNCTION__,  @"[ERROR]:", s, ## __VA_ARGS__)
+#define	LKErrorSecure(s, ...)	LKFormatLog(BUNDLE_ID, kLKIgnoreLevel, YES, NULL, 0, __PRETTY_FUNCTION__,  @"[ERROR]:", s, ## __VA_ARGS__)
+#else
+#define	LKError(s, ...)
+#define	LKErrorSecure(s, ...)
+#endif
 
 //  useful strings setup so that they don't have to be reinitialized
 extern NSString *const kLKEmptyString;

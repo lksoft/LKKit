@@ -18,6 +18,10 @@ NSString *const kLKtrue = @"true";
 NSString *const kLKfalse = @"false";
 NSString *const kLKQuote = @"\"";
 
+//	utility function for the loggers
+NSString	*LKSecureFormat(NSString *format);
+
+
 static NSMutableDictionary	*lkBundleConfigurations = nil;
 
 @interface LKLogHelper ()
@@ -115,7 +119,7 @@ static NSMutableDictionary	*lkBundleConfigurations = nil;
 	[defaultSet setObject:[NSNumber numberWithBool:active] forKey:kLKConfiguredDebuggingKey];
 	[defaultSet setObject:[NSNumber numberWithInteger:level] forKey:kLKConfiguredLogLevelKey];
 	
-	NSLog(@"[LKLogHelper]Setting configuration for %@: debugging-%@  logLevel-%d", aBundleID, (active?@"YES":@"NO"), (int)level);
+	NSLog(@"[LKLogHelper]Setting debugging-%@  &  logLevel-%d  for %@:", (active?@"YES":@"NO"), (int)level, aBundleID);
 	
 }
 
@@ -138,8 +142,7 @@ static NSMutableDictionary	*lkBundleConfigurations = nil;
 @end
 
 
-void LKLogV(NSString *aBundleID, NSInteger level, BOOL isSecure, NSString *prefix, const char *file, 
-			int lineNum, const char *method, NSString *format, va_list argptr) {
+void LKFormatLog(NSString *aBundleID, NSInteger level, BOOL isSecure, const char *file, int lineNum, const char *method, NSString *prefix, NSString *format, ...) {
 	
 	NSString	*formattedPrefix = prefix;
 	NSString	*adjustedFormat;
@@ -162,7 +165,7 @@ void LKLogV(NSString *aBundleID, NSInteger level, BOOL isSecure, NSString *prefi
 		//		it will secure the data
 #ifndef LK_INSECURE_LOGS
 		format = LKSecureFormat(format);
-		argptr = nil;
+//		argptr = NULL;
 #endif
 	}
 	
@@ -190,6 +193,10 @@ void LKLogV(NSString *aBundleID, NSInteger level, BOOL isSecure, NSString *prefi
 	}
 	format = newFormat;
 //	NSLog(@"Format value is:%@", format);
+
+	//	Get the variable argument list
+	va_list argptr;
+	va_start(argptr, format);
 	
 	if (logLevel == kLKNotInited) {
 		NSString	*emptyFormat = [NSString stringWithFormat:@"[No LKLogHelper instance]:%@", format];
@@ -208,35 +215,6 @@ void LKLogV(NSString *aBundleID, NSInteger level, BOOL isSecure, NSString *prefi
 	}
 }
 
-#ifndef DEBUG_OUTPUT_OFF
-void LKInternalLog(NSString *aBundleID, NSInteger level, BOOL isSecure, const char *file, int lineNum, const char *method, NSString *format, ...) {
-	va_list argptr;
-	va_start(argptr, format);
-	LKLogV(aBundleID, level, isSecure, @"[DEBUG:%d]:", file, lineNum, method, format, argptr);
-}
-#endif
-
-void LKInternalInformation(NSString *aBundleID, NSString *format, ...) {
-	va_list argptr;
-	va_start(argptr, format);
-	LKLogV(aBundleID, kLKIgnoreLevel, NO, @"[INFO]:", NULL, 0, NULL, format, argptr);
-}
-
-void LKInternalWarning(NSString *aBundleID, const char *method, NSString *format, ...) {
-#ifndef WARN_OUTPUT_OFF
-	va_list argptr;
-	va_start(argptr, format);
-	LKLogV(aBundleID, kLKIgnoreLevel, YES, @"[WARNING]:", NULL, 0, method, format, argptr);
-#endif
-}
-
-void LKInternalError(NSString *aBundleID, const char *method, NSString *format, ...) {
-#ifndef ERROR_OUTPUT_OFF
-	va_list argptr;
-	va_start(argptr, format);
-	LKLogV(aBundleID, kLKIgnoreLevel, YES, @"[ERROR]:", NULL, 0, method, format, argptr);
-#endif
-}
 
 NSString	*LKSecureFormat(NSString *format) {
 	
