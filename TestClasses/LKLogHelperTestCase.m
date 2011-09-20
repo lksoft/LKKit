@@ -28,23 +28,21 @@
     [super tearDown];
 }
 
-- (void)testSomething {
-	
-	//	Init our logger
-	[[LKLogHelper sharedInstance] setDefaultActive:YES andLogLevel:9 forID:BUNDLE_ID];
-	
-	//	Get the standard output and flush it
-	NSFileHandle	*stdoutFileHandle = [NSFileHandle fileHandleWithStandardOutput];
-	[stdoutFileHandle synchronizeFile];
+- (void)testUndefinedLogs {
 	
 	//	Call one of our log messages
-	LKLogClear(2, @"This is our message");
+	LKLog(@"This is our message 1");
 	
-	//	Get the results from the stdout file
-	NSData	*readData = [stdoutFileHandle readDataToEndOfFile];
+}
+
+- (void)testUsingBundleID {
 	
-	//	Print out data
-	NSLog(@"%@", readData);
+	//	Init our logger
+	[[LKLogHelper sharedInstance] setLogsActive:YES andLogLevel:3 forID:BUNDLE_ID];
+	
+	//	Call one of our log messages
+	LKLLog(2, @"This is our message 2");
+	
 }
 
 @end

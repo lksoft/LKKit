@@ -22,13 +22,13 @@
  *  Set LKCurrentDebugLogLevel in the applications preferences file
  *		to change the level at runtime
  *
- *	Call [[LKLogHelper sharedInstance] setDefaultActive:(BOOL) andLogLevel:(NSInteger) forID:(NSString *)] as soon as possible to init
+ *	Call [[LKLogHelper sharedInstance] setLogsActive:(BOOL) andLogLevel:(NSInteger) forID:(NSString *)] as soon as possible to init
  *
  *****/
 void LKLogV(NSString *aBundleID, NSInteger level, BOOL isSecure, NSString *prefix, const char *file, int lineNum, const char *method, NSString *format, va_list argptr);
 void LKInternalInformation(NSString *aBundleID, NSString *format, ...);
-void LKInternalWarning(NSString *aBundleID, const char *file, int lineNum, const char *method, NSString *format, ...);
-void LKInternalError(NSString *aBundleID, const char *file, int lineNum, const char *method, NSString *format, ...);
+void LKInternalWarning(NSString *aBundleID, const char *method, NSString *format, ...);
+void LKInternalError(NSString *aBundleID, const char *method, NSString *format, ...);
 void LKInternalLog(NSString *aBundleID, NSInteger level, BOOL isSecure, const char *file, int lineNum, const char *method, NSString *format, ...);
 
 //	utility function for the loggers
@@ -64,17 +64,16 @@ long getOSVersion();
 #ifndef DEBUG_OUTPUT_OFF
 #define kDebugEnabled			YES
 #define	LKLLog(i, s, ...)		LKInternalLog(BUNDLE_ID, i, YES, __FILE__, __LINE__, __PRETTY_FUNCTION__, s, ## __VA_ARGS__)
-#define	LKLog(s, ...)			LKInternalLog(BUNDLE_ID, kLKDefaultLevel, YES, __FILE__, __LINE__, __PRETTY_FUNCTION__, s, ## __VA_ARGS__)
-#define	LKLogClear(i, s, ...)	LKInternalLog(BUNDLE_ID, i, NO, __FILE__, __LINE__, __PRETTY_FUNCTION__, s, ## __VA_ARGS__)
+#define	LKLog(s, ...)			LKInternalLog(BUNDLE_ID, kLKDefaultLevel, NO, NULL, 0, __PRETTY_FUNCTION__, s, ## __VA_ARGS__)
 #else
 #define kDebugEnabled			NO
 #define LKLLog(i, s, ...)
 #define LKLog(s, ...)
-#define	LKLogClear(i, s, ...)
 #endif
+#define LKSecureLog(s, ...)		LKInternalLog(BUNDLE_ID, kLKDefaultLevel, YES, __FILE__, __LINE__, __PRETTY_FUNCTION__, s, ## __VA_ARGS__)
 #define	LKInfo(s, ...)			LKInternalInformation(BUNDLE_ID, s, ## __VA_ARGS__)
-#define	LKWarn(s, ...)			LKInternalWarning(BUNDLE_ID, __FILE__, __LINE__, __PRETTY_FUNCTION__, s, ## __VA_ARGS__)
-#define	LKError(s, ...)			LKInternalError(BUNDLE_ID, __FILE__, __LINE__, __PRETTY_FUNCTION__, s, ## __VA_ARGS__)
+#define	LKWarn(s, ...)			LKInternalWarning(BUNDLE_ID, __PRETTY_FUNCTION__, s, ## __VA_ARGS__)
+#define	LKError(s, ...)			LKInternalError(BUNDLE_ID, __PRETTY_FUNCTION__, s, ## __VA_ARGS__)
 
 //  useful strings setup so that they don't have to be reinitialized
 extern NSString *const kLKEmptyString;
@@ -90,18 +89,13 @@ extern NSString *const kLKfalse;
 extern NSString *const kLKQuote;
 
 @interface LKLogHelper : NSObject {
-	NSString			*defaultID;
 }
-@property (nonatomic, copy)	NSString	*defaultID;
 
 + (LKLogHelper *)sharedInstance;
 
 - (BOOL)debuggingOnForBundleID:(NSString *)aBundleID;
 - (NSInteger)logLevelForBundleID:(NSString *)aBundleID;
 
-- (BOOL)currentApplicationDebuggingOn;
-- (NSInteger)currentApplicationLogLevel;
-- (void)setDefaultActive:(BOOL)active andLogLevel:(NSInteger)level forID:(NSString *)bundleID;
-
+- (void)setLogsActive:(BOOL)active andLogLevel:(NSInteger)level forID:(NSString *)bundleID;
 
 @end

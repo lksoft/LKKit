@@ -21,12 +21,10 @@ NSString *const kLKQuote = @"\"";
 static NSMutableDictionary	*lkBundleConfigurations = nil;
 
 @interface LKLogHelper ()
-- (NSMutableDictionary *)getDefaultSetForID:(NSString *)aBundleID;
+- (NSMutableDictionary *)logDictForID:(NSString *)aBundleID;
 @end
 
 @implementation LKLogHelper
-
-@synthesize defaultID;
 
 
 - (id)init {
@@ -38,7 +36,6 @@ static NSMutableDictionary	*lkBundleConfigurations = nil;
 }
 
 - (void)dealloc {
-	self.defaultID = nil;
 	[super dealloc];
 }
 
@@ -54,12 +51,12 @@ static NSMutableDictionary	*lkBundleConfigurations = nil;
 	BOOL		debugging = NO;
 	
 	//	try to get the dictionary and see if it is configured...
-	NSMutableDictionary	*defaultSet = [self getDefaultSetForID:aBundleID];
-	if (defaultSet != nil) {
+	NSMutableDictionary	*logDict = [self logDictForID:aBundleID];
+	if (logDict != nil) {
 		
 		//	get the values from the set
-		NSNumber	*areLogsOn = (NSNumber *)[defaultSet objectForKey:kLKConfiguredDebuggingKey];
-		NSNumber	*logLevel = (NSNumber *)[defaultSet objectForKey:kLKConfiguredLogLevelKey];
+		NSNumber	*areLogsOn = (NSNumber *)[logDict objectForKey:kLKConfiguredDebuggingKey];
+		NSNumber	*logLevel = (NSNumber *)[logDict objectForKey:kLKConfiguredLogLevelKey];
 		
 		//	get any set log level
 		if (logLevel != nil) {
@@ -80,46 +77,36 @@ static NSMutableDictionary	*lkBundleConfigurations = nil;
 	return workingLevel;
 }
 
-//  A method to return, using the defaults functionality, the current
-//		application level to use for logging.
-- (NSInteger)currentApplicationLogLevel {
-	return [self logLevelForBundleID:[self defaultID]];
-}
-
-- (BOOL)currentApplicationDebuggingOn {
-	return [self debuggingOnForBundleID:[self defaultID]];
-}
-
 - (BOOL)debuggingOnForBundleID:(NSString *)aBundleID {
-	NSDictionary	*set = [self getDefaultSetForID:aBundleID];
-	return [[set objectForKey:kLKConfiguredDebuggingKey] boolValue];
+	NSDictionary	*logDict = [self logDictForID:aBundleID];
+	return [[logDict objectForKey:kLKConfiguredDebuggingKey] boolValue];
 }
 
 #pragma mark - Configuration
 
 //	get the defaultSet for the bundleID
-- (NSMutableDictionary *)getDefaultSetForID:(NSString *)aBundleID {
+- (NSMutableDictionary *)logDictForID:(NSString *)aBundleID {
 
 	//	if no id is passed then ignore
 	if (IsEmpty(aBundleID)) {
-		NSLog(@"[LKLogHelper ERROR] no bundleID was passed to getDefaultSetForID");
+		NSLog(@"[LKLogHelper ERROR] no bundleID was passed to logDictForID");
 		return nil;
 	}
 	
 	//	get any existing set and create a new one if there isn't any
-	NSMutableDictionary	*defaultSet = (NSMutableDictionary *)[lkBundleConfigurations objectForKey:aBundleID];
-	if (defaultSet == nil) {
-		defaultSet = [[NSMutableDictionary alloc] init];
-		[lkBundleConfigurations setObject:[defaultSet autorelease] forKey:aBundleID];
+	NSMutableDictionary	*logDict = (NSMutableDictionary *)[lkBundleConfigurations objectForKey:aBundleID];
+	if (logDict == nil) {
+		logDict = [[NSMutableDictionary alloc] init];
+		[lkBundleConfigurations setObject:[logDict autorelease] forKey:aBundleID];
 	}
 	
-	return defaultSet;
+	return logDict;
 }
 
 //	this allows the calling bundle to set the default values
-- (void)setDefaultActive:(BOOL)active andLogLevel:(NSInteger)level forID:(NSString *)aBundleID {
+- (void)setLogsActive:(BOOL)active andLogLevel:(NSInteger)level forID:(NSString *)aBundleID {
 
-	NSMutableDictionary	*defaultSet = [self getDefaultSetForID:aBundleID];
+	NSMutableDictionary	*defaultSet = [self logDictForID:aBundleID];
 	
 	//	if none was found ignore values
 	if (defaultSet == nil) return;
@@ -130,8 +117,6 @@ static NSMutableDictionary	*lkBundleConfigurations = nil;
 	
 	NSLog(@"[LKLogHelper]Setting configuration for %@: debugging-%@  logLevel-%d", aBundleID, (active?@"YES":@"NO"), (int)level);
 	
-	//	then make this bundleID the default one
-	[self setDefaultID:aBundleID];
 }
 
 //	These methods ensure that people calling the methods do not screw up the object
@@ -163,7 +148,7 @@ void LKLogV(NSString *aBundleID, NSInteger level, BOOL isSecure, NSString *prefi
 	
 	//	ensure that the proper bundle is called, unless it is not set
 	if ([aBundleID isEqualToString:kLKBundleKeyUndefined]) {
-		logLevel = [utils currentApplicationLogLevel];
+		logLevel = kLKIgnoreLevel;
 	}
 	else {
 		logLevel = [utils logLevelForBundleID:aBundleID];
@@ -192,7 +177,12 @@ void LKLogV(NSString *aBundleID, NSInteger level, BOOL isSecure, NSString *prefi
 		methodName = [NSString stringWithUTF8String:method];
 	}
 	if (fileName || methodName) {
-		[newFormat appendFormat:@"(%@:%@:%d) ", fileName, methodName, lineNum];
+		if (fileName != NULL) {
+			[newFormat appendFormat:@"({%@:%d}:%@) ", fileName, lineNum, methodName];
+		}
+		else {
+			[newFormat appendFormat:@"(%@) ", methodName];
+		}
 	}
 	[newFormat appendString:format];
 	if (![format hasSuffix:@"\n"]) {
@@ -202,9 +192,8 @@ void LKLogV(NSString *aBundleID, NSInteger level, BOOL isSecure, NSString *prefi
 //	NSLog(@"Format value is:%@", format);
 	
 	if (logLevel == kLKNotInited) {
-		NSLog(@"[LKLogHelper Error]Debugger not yet initialized!! Outputting raw...");
-		NSLogv(format, argptr);
-		NSLog(@"[LKLogHelper Error]Outputting complete");
+		NSString	*emptyFormat = [NSString stringWithFormat:@"[No LKLogHelper instance]:%@", format];
+		NSLogv(emptyFormat, argptr);
 	}
 	else if (level <= logLevel) {
 		//  if we are not ignoring the level assume that the prefix has a format for it
@@ -233,19 +222,19 @@ void LKInternalInformation(NSString *aBundleID, NSString *format, ...) {
 	LKLogV(aBundleID, kLKIgnoreLevel, NO, @"[INFO]:", NULL, 0, NULL, format, argptr);
 }
 
-void LKInternalWarning(NSString *aBundleID, const char *file, int lineNum, const char *method, NSString *format, ...) {
+void LKInternalWarning(NSString *aBundleID, const char *method, NSString *format, ...) {
 #ifndef WARN_OUTPUT_OFF
 	va_list argptr;
 	va_start(argptr, format);
-	LKLogV(aBundleID, kLKIgnoreLevel, YES, @"[WARNING]:", file, lineNum, method, format, argptr);
+	LKLogV(aBundleID, kLKIgnoreLevel, YES, @"[WARNING]:", NULL, 0, method, format, argptr);
 #endif
 }
 
-void LKInternalError(NSString *aBundleID, const char *file, int lineNum, const char *method, NSString *format, ...) {
+void LKInternalError(NSString *aBundleID, const char *method, NSString *format, ...) {
 #ifndef ERROR_OUTPUT_OFF
 	va_list argptr;
 	va_start(argptr, format);
-	LKLogV(aBundleID, kLKIgnoreLevel, YES, @"[ERROR]:", file, lineNum, method, format, argptr);
+	LKLogV(aBundleID, kLKIgnoreLevel, YES, @"[ERROR]:", NULL, 0, method, format, argptr);
 #endif
 }
 
