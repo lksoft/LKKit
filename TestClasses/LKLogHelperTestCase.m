@@ -41,8 +41,22 @@
 	[[LKLogHelper sharedInstance] setLogsActive:YES andLogLevel:3 forID:BUNDLE_ID];
 	
 	//	Call one of our log messages
-	LKLLog(2, @"This is our message 2");
+	LKZLog(2, @"This is our message 2");
 	
+	LKLog(@"This has no values");
+	LKLog(@"The string you should see is 'blue':%@", @"blue");
+	
+	LKSecureLog(@"The values here should be hidden:%@", @"Whatever");
+	
+	LKInfo(@"Info is being shown here:%@", @"some info");
+	LKInfoSecure(@"Secure Info is being shown here:%@", @"some info");
+	
+	LKWarn(@"Something isn't as it should be:%@", @"WARNING");
+	LKWarnSecure(@"Something isn't as secure it should be:%@", @"WARNING");
+
+	LKError(@"Something is really screwed up:%@", @"ERROR");
+	LKErrorSecure(@"Something is really securely screwed up:%@", @"ERROR");
+
 }
 
 @end
