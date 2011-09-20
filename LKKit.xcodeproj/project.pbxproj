@@ -44,6 +44,7 @@
 		D2B5FBC313D5C0D700630112 /* LKLogHelperTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = D2B5FBC213D5C0D700630112 /* LKLogHelperTestCase.m */; };
 		D2B5FC8A13D88E1000630112 /* NSObject+LKObject.m in Sources */ = {isa = PBXBuildFile; fileRef = D2B5FC8913D88E1000630112 /* NSObject+LKObject.m */; };
 		D2C9AE6F13A02FBC00CD9998 /* DOMNode+LKHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = D2C9AE6E13A02FBC00CD9998 /* DOMNode+LKHelpers.m */; };
+		D2DC0F301428A548005D2F90 /* README.markdown in Resources */ = {isa = PBXBuildFile; fileRef = D2DC0F2F1428A548005D2F90 /* README.markdown */; };
 		D2F71D1413AFEB0700082BC9 /* GHUnitIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2F71D1313AFEB0700082BC9 /* GHUnitIOS.framework */; };
 /* End PBXBuildFile section */
 
@@ -95,6 +96,7 @@
 		D2B5FC8913D88E1000630112 /* NSObject+LKObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+LKObject.m"; sourceTree = "<group>"; };
 		D2C9AE6D13A02FBC00CD9998 /* DOMNode+LKHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DOMNode+LKHelpers.h"; sourceTree = "<group>"; };
 		D2C9AE6E13A02FBC00CD9998 /* DOMNode+LKHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DOMNode+LKHelpers.m"; sourceTree = "<group>"; };
+		D2DC0F2F1428A548005D2F90 /* README.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.markdown; sourceTree = SOURCE_ROOT; };
 		D2F71D1313AFEB0700082BC9 /* GHUnitIOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GHUnitIOS.framework; path = ../../../Library/Frameworks/GHUnitIOS.framework; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -240,6 +242,7 @@
 			isa = PBXGroup;
 			children = (
 				D257E28E134F6A0D000F2C16 /* lk-warnings.xcconfig */,
+				D2DC0F2F1428A548005D2F90 /* README.markdown */,
 			);
 			path = Project;
 			sourceTree = "<group>";
@@ -339,6 +342,7 @@
 				D257E26E134F675A000F2C16 /* DrawingTests.h in Resources */,
 				D257E28F134F6A0D000F2C16 /* lk-warnings.xcconfig in Resources */,
 				D264351413534A56006C7A08 /* OrdinalMappings.plist in Resources */,
+				D2DC0F301428A548005D2F90 /* README.markdown in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

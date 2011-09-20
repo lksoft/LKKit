@@ -17,7 +17,7 @@
 //	Assertion that will simply log in Production code
 #define LKAssert(condition, ...) do { if (!(condition)) { ALog(__VA_ARGS__); }} while(0)
 
-//	Simple way to test most object for emptyness
+//	Simple way to test most objects for emptyness
 static inline BOOL IsEmpty(id thing) { return thing == nil || ([thing respondsToSelector:@selector(length)] && [(NSData *)thing length] == 0) || ([thing respondsToSelector:@selector(count)] && [(NSArray *)thing count] == 0); }
 
 
