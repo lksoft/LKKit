@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+#import	"LKCGStructs.h"
+
 #define	kGRRRectValueKey				@"boundingRect"
 #define	kGRRGradientColorListValueKey	@"gradientColorList"
 #define	kGRRStrokeColorValueKey			@"strokeColor"
@@ -20,15 +22,3 @@
 CGMutablePathRef	LKCreateRoundedRectPath(CGRect desiredRect, CGFloat cornerRadius, CGFloat lineWidth);
 void	LKDrawGradientRoundedRectPath(CGContextRef context, NSDictionary *values);
 
-
-CGRect	LKRectBySettingX(CGRect originalRect, CGFloat newX);
-CGRect	LKRectBySettingY(CGRect originalRect, CGFloat newY);
-CGRect	LKRectBySettingWidth(CGRect originalRect, CGFloat newWidth);
-CGRect	LKRectBySettingHeight(CGRect originalRect, CGFloat newHeight);
-CGRect	LKRectBySettingOrigin(CGRect originalRect, CGPoint newOrigin);
-CGRect	LKRectBySettingSize(CGRect originalRect, CGSize newSize);
-
-CGRect	LKRectByOffsettingX(CGRect originalRect, CGFloat xOffset);
-CGRect	LKRectByOffsettingY(CGRect originalRect, CGFloat yOffset);
-CGRect	LKRectByAdjustingWidth(CGRect originalRect, CGFloat width);
-CGRect	LKRectByAdjustingHeight(CGRect originalRect, CGFloat height);
