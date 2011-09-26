@@ -54,7 +54,7 @@
 	LKWarn(@"Something isn't as it should be:%@", @"WARNING");
 	LKWarnSecure(@"Something isn't as secure it should be:%@", @"WARNING");
 
-	LKError(@"Something is really screwed up:%@", @"ERROR");
+	LKErr(@"Something is really screwed up:%@", @"ERROR");
 	LKErrorSecure(@"Something is really securely screwed up:%@", @"ERROR");
 
 }

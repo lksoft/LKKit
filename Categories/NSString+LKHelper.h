@@ -13,6 +13,8 @@ extern	NSString	*const	kLKMaleGender;
 extern	NSString	*const	kLKNeuterGender;
  
 @interface NSString (NSString_LKHelper)
+- (NSString *)stringFormattedWithArray:(NSArray *)array;
+
 + (NSString *)ordinalStringForInteger:(NSInteger)number;
 + (NSString *)ordinalStringForNumber:(NSNumber *)number;
 + (NSString *)ordinalStringForNumber:(NSNumber *)number gender:(const NSString *)gender;

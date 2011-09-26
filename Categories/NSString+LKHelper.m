@@ -30,6 +30,44 @@ NSString	*const	kLKNeuterGender = @"N";
 @implementation NSString (NSString_LKHelper)
 
 
+#pragma mark - Enhanced Formatting
+
+- (NSString *)stringFormattedWithArray:(NSArray *)array {
+	
+	//  if there is nothing in the array return original
+	if ((array == nil) || ([array count] == 0) || 
+		([self rangeOfString:@"%@"].location == NSNotFound)) {
+		return [[self copy] autorelease];
+	}
+	
+	NSMutableString *result = [[NSMutableString alloc] init];
+	int				counter = 0;
+	NSRange			searchRange = NSMakeRange(0, [self length]);
+	NSRange			tagRange = [self rangeOfString:@"%@" options:NSLiteralSearch range:searchRange];
+	
+	while (tagRange.location != NSNotFound) {
+		
+		//  append the format part of the string
+		[result appendString:[self substringWithRange:
+							  NSMakeRange(searchRange.location, (tagRange.location - searchRange.location))]];
+		//  and the value from the array
+		[result appendString:[array objectAtIndex:counter]];
+		
+		//  reset the search range and increment the counter
+		searchRange.location = tagRange.location + 2;
+		searchRange.length = [self length] - searchRange.location;
+		counter++;
+		
+		//  get the next tag range
+		tagRange = [self rangeOfString:@"%@" options:NSLiteralSearch range:searchRange];
+	}
+	
+	//  add the rest of the searchRange if there is any
+	[result appendString:[self substringFromIndex:searchRange.location]];
+	
+	return [result autorelease];
+}
+
 #pragma mark - Ordinal Value Methods
 
 + (NSString *)ordinalStringForInteger:(NSInteger)number {

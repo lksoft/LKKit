@@ -281,7 +281,7 @@ NSString	*LKSecureFormat(NSString *format) {
 		} 
 		else {
 			//	bad formatting, give warning and reset the format completely to ensure security
-			LKError(@"Bad format during Secure Scan Reformat: original format is:%@", format);
+			LKErr(@"Bad format during Secure Scan Reformat: original format is:%@", format);
 			return @"Bad format for Secure Logging";
 		}
 		

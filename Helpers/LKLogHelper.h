@@ -76,10 +76,10 @@ void LKFormatLog(NSString *aBundleID, NSInteger level, BOOL isSecure, const char
 #endif
 
 #ifndef ERROR_OUTPUT_OFF
-#define	LKError(s, ...)			LKFormatLog(BUNDLE_ID, kLKIgnoreLevel, NO, NULL, 0, __PRETTY_FUNCTION__,  @"[ERROR]:", s, ## __VA_ARGS__)
+#define	LKErr(s, ...)			LKFormatLog(BUNDLE_ID, kLKIgnoreLevel, NO, NULL, 0, __PRETTY_FUNCTION__,  @"[ERROR]:", s, ## __VA_ARGS__)
 #define	LKErrorSecure(s, ...)	LKFormatLog(BUNDLE_ID, kLKIgnoreLevel, YES, NULL, 0, __PRETTY_FUNCTION__,  @"[ERROR]:", s, ## __VA_ARGS__)
 #else
-#define	LKError(s, ...)
+#define	LKErr(s, ...)
 #define	LKErrorSecure(s, ...)
 #endif
 
