@@ -11,9 +11,11 @@
 extern	NSString	*const	kLKFemaleGender;
 extern	NSString	*const	kLKMaleGender;
 extern	NSString	*const	kLKNeuterGender;
- 
+
 @interface NSString (NSString_LKHelper)
+- (NSArray *)placeholderNames;
 - (NSString *)stringFormattedWithArray:(NSArray *)array;
+- (NSString *)stringFormattedWithDictionary:(NSDictionary *)dict;
 
 + (NSString *)ordinalStringForInteger:(NSInteger)number;
 + (NSString *)ordinalStringForNumber:(NSNumber *)number;

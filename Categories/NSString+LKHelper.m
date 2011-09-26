@@ -22,50 +22,126 @@
 #define kLKStringHelperMappingUsageMultiple			@"multiple"
 
 
+//	External
 NSString	*const	kLKFemaleGender = @"F";
 NSString	*const	kLKMaleGender = @"M";
 NSString	*const	kLKNeuterGender = @"N";
 
+//	Internal
+NSString	*const	kLKPlaceholderOpen = @"%";
+NSString	*const	kLKPlaceholderNormal = @"%@";
+NSString	*const	kLKPlaceholderNormalClose = @"@";
+NSString	*const	kLKPlaceholderPositionalClose = @"$@";
+NSString	*const	kLKPlaceholderNamedOpen = @"%<";
+NSString	*const	kLKPlaceholderNamedClose = @">@";
 
 @implementation NSString (NSString_LKHelper)
 
 
 #pragma mark - Enhanced Formatting
 
-- (NSString *)stringFormattedWithArray:(NSArray *)array {
+- (NSArray *)placeholderNames {
+	//	Return empty array if there are no placeholders
+	if ([self rangeOfString:kLKPlaceholderNamedOpen].location == NSNotFound) {
+		return [NSArray array];
+	}
 	
-	//  if there is nothing in the array return original
-	if ((array == nil) || ([array count] == 0) || 
-		([self rangeOfString:@"%@"].location == NSNotFound)) {
+	//	Then do a scan looking for the matches
+	NSMutableArray	*placeholderNames = [NSMutableArray array];
+	NSScanner	*scanner = [NSScanner scannerWithString:self];
+	NSString	*aPlaceholder = nil;
+	[scanner scanUpToString:kLKPlaceholderNamedOpen intoString:NULL];
+	while (![scanner isAtEnd]) {
+		[scanner scanString:kLKPlaceholderNamedOpen intoString:NULL];
+		[scanner scanUpToString:kLKPlaceholderNamedClose intoString:&aPlaceholder];
+		//	We shouldn't be at the end (should still be ')@') if it is valid
+		if (![scanner isAtEnd]) {
+			[placeholderNames addObject:aPlaceholder];
+		}
+		[scanner scanUpToString:kLKPlaceholderNamedOpen intoString:NULL];
+	}
+	return [NSArray arrayWithArray:placeholderNames];
+}
+
+-(NSIndexSet *)placeholderIndexes {
+	//	Return empty array if there are no placeholders
+	if ([self rangeOfString:kLKPlaceholderOpen].location == NSNotFound) {
+		return [NSIndexSet indexSet];
+	}
+	
+	//	Then scan for matches (still might not find any)
+	NSMutableIndexSet	*newIndexes = [NSMutableIndexSet indexSet];
+	NSScanner			*scanner = [NSScanner scannerWithString:self];
+	NSString			*aPlaceholder = nil;
+	[scanner scanUpToString:kLKPlaceholderOpen intoString:NULL];
+	while (![scanner isAtEnd]) {
+		[scanner scanString:kLKPlaceholderOpen intoString:NULL];
+		//	If this is a normal placeholder skip it
+		if ([[[scanner string] substringWithRange:NSMakeRange([scanner scanLocation], 1)] isEqualToString:kLKPlaceholderNormalClose]) {
+			[scanner scanUpToString:kLKPlaceholderOpen intoString:NULL];
+			continue;
+		}
+		[scanner scanUpToString:kLKPlaceholderPositionalClose intoString:&aPlaceholder];
+		//	Try to make that string an integer
+		NSInteger	i = [aPlaceholder integerValue];
+		if (i > 0) {
+			[newIndexes addIndex:i];
+		}
+		[scanner scanUpToString:kLKPlaceholderOpen intoString:NULL];
+	}
+	
+	return newIndexes;
+}
+
+
+- (NSString *)stringFormattedWithArray:(NSArray *)array {
+	if ((IsEmpty(array)) || ([self rangeOfString:kLKPlaceholderOpen].location == NSNotFound)) {
 		return [[self copy] autorelease];
 	}
 	
-	NSMutableString *result = [[NSMutableString alloc] init];
-	int				counter = 0;
-	NSRange			searchRange = NSMakeRange(0, [self length]);
-	NSRange			tagRange = [self rangeOfString:@"%@" options:NSLiteralSearch range:searchRange];
+	//	Copy of self to work on
+	NSMutableString	*newSelf = [[self mutableCopy] autorelease];
+	NSMutableArray	*usedValues = [NSMutableArray arrayWithCapacity:[array count]];
 	
-	while (tagRange.location != NSNotFound) {
-		
-		//  append the format part of the string
-		[result appendString:[self substringWithRange:
-							  NSMakeRange(searchRange.location, (tagRange.location - searchRange.location))]];
-		//  and the value from the array
-		[result appendString:[array objectAtIndex:counter]];
-		
-		//  reset the search range and increment the counter
-		searchRange.location = tagRange.location + 2;
-		searchRange.length = [self length] - searchRange.location;
-		counter++;
-		
-		//  get the next tag range
-		tagRange = [self rangeOfString:@"%@" options:NSLiteralSearch range:searchRange];
+	//	Handle positionally marked placeholders first
+	NSIndexSet	*placeholderList = [self placeholderIndexes];
+	[placeholderList enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+		NSString	*fullPlaceholder = [NSString stringWithFormat:@"%@%d%@", kLKPlaceholderOpen, idx, kLKPlaceholderPositionalClose];
+		if ([array count] >= idx) {
+			NSRange	aRange = [newSelf rangeOfString:fullPlaceholder];
+			[newSelf replaceCharactersInRange:aRange withString:[array objectAtIndex:(idx-1)]];
+			[usedValues addObject:[array objectAtIndex:(idx-1)]];
+		}
+	}];
+	
+	//	Then clean up any non-positional in left-to-right order
+	NSMutableArray	*unusedValues = [[array mutableCopy] autorelease];
+	[unusedValues removeObjectsInArray:usedValues];
+	for (NSUInteger j = 0; j < [unusedValues count]; j++) {
+		NSRange	aRange = [newSelf rangeOfString:kLKPlaceholderNormal];
+		[newSelf replaceCharactersInRange:aRange withString:[unusedValues objectAtIndex:j]];
 	}
 	
-	//  add the rest of the searchRange if there is any
-	[result appendString:[self substringFromIndex:searchRange.location]];
+	return [NSString stringWithString:newSelf];
+}
+
+- (NSString *)stringFormattedWithDictionary:(NSDictionary *)dict {
+	if ((IsEmpty(dict)) || ([self rangeOfString:kLKPlaceholderNamedOpen].location == NSNotFound)) {
+		return [[self copy] autorelease];
+	}
 	
-	return [result autorelease];
+	NSMutableString	*newSelf = [[self mutableCopy] autorelease];
+	
+	NSArray	*placeholderList = [self placeholderNames];
+	for (NSString *aKey in placeholderList) {
+		NSString	*fullPlaceholder = [NSString stringWithFormat:@"%@%@%@", kLKPlaceholderNamedOpen, aKey, kLKPlaceholderNamedClose];
+		if ([dict valueForKey:aKey]) {
+			NSRange	aRange = [newSelf rangeOfString:fullPlaceholder];
+			[newSelf replaceCharactersInRange:aRange withString:[dict valueForKey:aKey]];
+		}
+	}
+	
+	return [NSString stringWithString:newSelf];
 }
 
 #pragma mark - Ordinal Value Methods
