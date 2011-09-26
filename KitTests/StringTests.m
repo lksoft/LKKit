@@ -72,6 +72,114 @@
 }
 
 
+
+#pragma mark - PlaceHolder Tests
+#pragma mark Names
+
+-  (void)test101_PlaceHolder_Names_Just_Normal {
+	NSString	*string = @"Here is a %@ that should have %@ and %@ in it.";
+	NSArray		*phList = [string placeholderNames];
+	STAssertNotNil(phList, nil);
+	STAssertTrue([phList count] == 0, nil);
+}
+
+-  (void)test102_PlaceHolder_Names {
+	NSString	*string = @"Here is a %<name>@ that should have %<value>@ and %<pride>@ in it.";
+	NSArray		*phList = [string placeholderNames];
+	STAssertTrue([phList count] == 3, nil);
+	STAssertTrue([phList containsObject:@"name"], nil);
+	STAssertTrue([phList containsObject:@"value"], nil);
+	STAssertTrue([phList containsObject:@"pride"], nil);
+}
+
+-  (void)test103_PlaceHolder_Names_With_Normal_1 {
+	NSString	*string = @"Here is a %<name>@ that should (%@) have %<value>@ and %<pride>@ in it.";
+	NSArray		*phList = [string placeholderNames];
+	STAssertTrue([phList count] == 3, nil);
+	STAssertTrue([phList containsObject:@"name"], nil);
+	STAssertTrue([phList containsObject:@"value"], nil);
+	STAssertTrue([phList containsObject:@"pride"], nil);
+}
+
+-  (void)test104_PlaceHolder_Names_With_Positional {
+	NSString	*string = @"Here is a %<name>@ that should (%1$@) [%2$@] have %<value>@ and %<pride>@ in it.";
+	NSArray		*phList = [string placeholderNames];
+	STAssertTrue([phList count] == 3, nil);
+	STAssertTrue([phList containsObject:@"name"], nil);
+	STAssertTrue([phList containsObject:@"value"], nil);
+	STAssertTrue([phList containsObject:@"pride"], nil);
+}
+
+#pragma mark Positions
+
+-  (void)test105_PlaceHolder_Positions_Just_Normal {
+	NSString	*string = @"Here is a %@ that should have %@ and %@ in it.";
+	NSArray		*phList = [string placeholderPositions];
+	STAssertNotNil(phList, nil);
+	STAssertTrue([phList count] == 0, nil);
+}
+
+-  (void)test106_PlaceHolder_Positions_Normal_With_Named {
+	NSString	*string = @"Here is a %<name>@ that should (%@) have %<value>@ and %<pride>@ in it.";
+	NSArray		*phList = [string placeholderPositions];
+	STAssertNotNil(phList, nil);
+	STAssertTrue([phList count] == 0, nil);
+}
+
+-  (void)test107_PlaceHolder_Positions {
+	NSString	*string = @"Here is a %1$@ that should have %2$@ and %3$@ in it.";
+	NSArray		*phList = [string placeholderPositions];
+	STAssertTrue([phList count] == 3, nil);
+	STAssertTrue([[phList objectAtIndex:0] integerValue] == 1, nil);
+	STAssertTrue([[phList objectAtIndex:1] integerValue] == 2, nil);
+	STAssertTrue([[phList objectAtIndex:2] integerValue] == 3, nil);
+}
+
+-  (void)test108_PlaceHolder_Positions_Disordered {
+	NSString	*string = @"Here is a %2$@ that should have %3$@ and %1$@ in it.";
+	NSArray		*phList = [string placeholderPositions];
+	STAssertTrue([phList count] == 3, nil);
+	STAssertTrue([[phList objectAtIndex:0] integerValue] == 2, nil);
+	STAssertTrue([[phList objectAtIndex:1] integerValue] == 3, nil);
+	STAssertTrue([[phList objectAtIndex:2] integerValue] == 1, nil);
+}
+
+-  (void)test109_PlaceHolder_Positions_Disordered_With_Named {
+	NSString	*string = @"Here is a %2$@ that %<name>@ should have %3$@ and %1$@ in it.";
+	NSArray		*phList = [string placeholderPositions];
+	STAssertTrue([phList count] == 3, nil);
+	STAssertTrue([[phList objectAtIndex:0] integerValue] == 2, nil);
+	STAssertTrue([[phList objectAtIndex:1] integerValue] == 3, nil);
+	STAssertTrue([[phList objectAtIndex:2] integerValue] == 1, nil);
+}
+
+-  (void)test110_PlaceHolder_Positions_Disordered_With_Named_Normal {
+	NSString	*string = @"Here is a %2$@ that %<name>@ should have %3$@ and %1$@ in it %@.";
+	NSArray		*phList = [string placeholderPositions];
+	STAssertTrue([phList count] == 3, nil);
+	STAssertTrue([[phList objectAtIndex:0] integerValue] == 2, nil);
+	STAssertTrue([[phList objectAtIndex:1] integerValue] == 3, nil);
+	STAssertTrue([[phList objectAtIndex:2] integerValue] == 1, nil);
+}
+
+-  (void)test111_PlaceHolder_Positions_Disordered_With_Normal {
+	NSString	*string = @"Here is a %2$@ that %@ should have %3$@ and %1$@ in it %@.";
+	NSArray		*phList = [string placeholderPositions];
+	STAssertTrue([phList count] == 3, nil);
+	STAssertTrue([[phList objectAtIndex:0] integerValue] == 2, nil);
+	STAssertTrue([[phList objectAtIndex:1] integerValue] == 3, nil);
+	STAssertTrue([[phList objectAtIndex:2] integerValue] == 1, nil);
+}
+
+
+#pragma mark FormatWithDict
+
+
+#pragma mark FormatWithArray
+
+
+
+
 #pragma mark - Test Admin
 
 - (void)setUp {

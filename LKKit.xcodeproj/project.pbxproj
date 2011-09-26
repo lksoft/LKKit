@@ -47,6 +47,14 @@
 		D2C9AE6F13A02FBC00CD9998 /* DOMNode+LKHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = D2C9AE6E13A02FBC00CD9998 /* DOMNode+LKHelpers.m */; };
 		D2D1E6C41430792E002FF1B1 /* LKError.m in Sources */ = {isa = PBXBuildFile; fileRef = D2D1E6C31430792E002FF1B1 /* LKError.m */; };
 		D2D1E6C51430792E002FF1B1 /* LKError.m in Sources */ = {isa = PBXBuildFile; fileRef = D2D1E6C31430792E002FF1B1 /* LKError.m */; };
+		D2D1E6CD1431303D002FF1B1 /* StringTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D264351913534BFF006C7A08 /* StringTests.m */; };
+		D2D1E6CE1431304B002FF1B1 /* DateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D257E2A413507DCE000F2C16 /* DateTests.m */; };
+		D2D1E6CF14313070002FF1B1 /* DrawingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D257E26F134F675A000F2C16 /* DrawingTests.m */; };
+		D2D1E6D01431310B002FF1B1 /* LKCGStructs.m in Sources */ = {isa = PBXBuildFile; fileRef = D2730FEC142A1F0300EB5CB7 /* LKCGStructs.m */; };
+		D2D1E6D114313118002FF1B1 /* NSString+LKHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = D264351013533D3C006C7A08 /* NSString+LKHelper.m */; };
+		D2D1E6D214313151002FF1B1 /* NSDate+LKHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = D257E2A113507D0B000F2C16 /* NSDate+LKHelpers.m */; };
+		D2D1E6D31431315F002FF1B1 /* NSLocale+LKHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = D264350913531408006C7A08 /* NSLocale+LKHelpers.m */; };
+		D2D1E6D5143132E7002FF1B1 /* OrdinalMappings.plist in Resources */ = {isa = PBXBuildFile; fileRef = D264351613534A56006C7A08 /* OrdinalMappings.plist */; };
 		D2DC0F301428A548005D2F90 /* README.markdown in Resources */ = {isa = PBXBuildFile; fileRef = D2DC0F2F1428A548005D2F90 /* README.markdown */; };
 		D2DC0F7A1428B1D6005D2F90 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2DC0F3C1428AF1E005D2F90 /* Cocoa.framework */; };
 		D2DC0F801428B1D6005D2F90 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D2DC0F7E1428B1D6005D2F90 /* InfoPlist.strings */; };
@@ -131,7 +139,7 @@
 		D2DC0F411428AF1E005D2F90 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		D2DC0F5A1428AF1F005D2F90 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		D2DC0F731428B01B005D2F90 /* LKInclude.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LKInclude.pch; sourceTree = "<group>"; };
-		D2DC0F781428B1D6005D2F90 /* MacRunner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = MacRunner.app; path = MacKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D2DC0F781428B1D6005D2F90 /* MacKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2DC0F7D1428B1D6005D2F90 /* MacRunner-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MacRunner-Info.plist"; sourceTree = "<group>"; };
 		D2DC0F7F1428B1D6005D2F90 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		D2DC0F811428B1D6005D2F90 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -209,7 +217,7 @@
 			children = (
 				D257E25D134F675A000F2C16 /* KitTests.octest */,
 				D26436341354B45A006C7A08 /* GHTester.app */,
-				D2DC0F781428B1D6005D2F90 /* MacRunner.app */,
+				D2DC0F781428B1D6005D2F90 /* MacKit.app */,
 				D2DC0F921428B1D6005D2F90 /* MacKitTests.octest */,
 			);
 			name = Products;
@@ -444,7 +452,7 @@
 			);
 			name = MacKit;
 			productName = MacRunner;
-			productReference = D2DC0F781428B1D6005D2F90 /* MacRunner.app */;
+			productReference = D2DC0F781428B1D6005D2F90 /* MacKit.app */;
 			productType = "com.apple.product-type.application";
 		};
 		D2DC0F911428B1D6005D2F90 /* MacKitTests */ = {
@@ -533,6 +541,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D2DC0F9C1428B1D6005D2F90 /* InfoPlist.strings in Resources */,
+				D2D1E6D5143132E7002FF1B1 /* OrdinalMappings.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -601,6 +610,10 @@
 				D2DC0F821428B1D6005D2F90 /* main.m in Sources */,
 				D2DC0F891428B1D6005D2F90 /* MacRunnerAppDelegate.m in Sources */,
 				D2DC0FA81428B251005D2F90 /* LKLogHelper.m in Sources */,
+				D2D1E6D01431310B002FF1B1 /* LKCGStructs.m in Sources */,
+				D2D1E6D114313118002FF1B1 /* NSString+LKHelper.m in Sources */,
+				D2D1E6D214313151002FF1B1 /* NSDate+LKHelpers.m in Sources */,
+				D2D1E6D31431315F002FF1B1 /* NSLocale+LKHelpers.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -610,6 +623,9 @@
 			files = (
 				D2DC0FA71428B24A005D2F90 /* LKLogHelperTestCase.m in Sources */,
 				D2D1E6C51430792E002FF1B1 /* LKError.m in Sources */,
+				D2D1E6CD1431303D002FF1B1 /* StringTests.m in Sources */,
+				D2D1E6CE1431304B002FF1B1 /* DateTests.m in Sources */,
+				D2D1E6CF14313070002FF1B1 /* DrawingTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -842,6 +858,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MacRunner/MacRunner-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					STRING_UNIT_TEST,
 					"DEBUG=1",
 					"$(inherited)",
 				);

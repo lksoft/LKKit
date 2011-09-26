@@ -35,7 +35,7 @@
 	NSDate	*earlyDate = [NSDate date];
 	NSDate	*lateDate = [NSDate dateWithTimeIntervalSinceNow:600.0f];
 	
-	STAssertTrue([lateDate isEarlierThanDate:earlyDate], @"Early:%@  Late:%@", earlyDate, lateDate);
+	STAssertFalse([lateDate isEarlierThanDate:earlyDate], @"Early:%@  Late:%@", earlyDate, lateDate);
 }
 
 #pragma mark - Locale Tests

@@ -8,7 +8,7 @@
 
 #import "DrawingTests.h"
 
-#import "LKCGDrawing.h"
+#import "LKCGStructs.h"
 
 @implementation DrawingTests
 
@@ -19,7 +19,7 @@
 	CGRect	startRect = CGRectMake(0.0f, 0.0f, 50.0f, 50.0f);
 	CGRect	endRect = LKRectBySettingX(startRect, 25.0f);
 	
-	STAssertEquals(endRect.origin.x, 25.0f, nil);
+	STAssertEquals(endRect.origin.x, 25.0, nil);
 }
 
 

@@ -63,16 +63,16 @@ NSString	*const	kLKPlaceholderNamedClose = @">@";
 	return [NSArray arrayWithArray:placeholderNames];
 }
 
--(NSIndexSet *)placeholderIndexes {
+- (NSArray *)placeholderPositions {
 	//	Return empty array if there are no placeholders
 	if ([self rangeOfString:kLKPlaceholderOpen].location == NSNotFound) {
-		return [NSIndexSet indexSet];
+		return [NSArray array];
 	}
 	
 	//	Then scan for matches (still might not find any)
-	NSMutableIndexSet	*newIndexes = [NSMutableIndexSet indexSet];
-	NSScanner			*scanner = [NSScanner scannerWithString:self];
-	NSString			*aPlaceholder = nil;
+	NSMutableArray	*newPositions = [NSMutableArray array];
+	NSScanner		*scanner = [NSScanner scannerWithString:self];
+	NSString		*aPlaceholder = nil;
 	[scanner scanUpToString:kLKPlaceholderOpen intoString:NULL];
 	while (![scanner isAtEnd]) {
 		[scanner scanString:kLKPlaceholderOpen intoString:NULL];
@@ -81,16 +81,21 @@ NSString	*const	kLKPlaceholderNamedClose = @">@";
 			[scanner scanUpToString:kLKPlaceholderOpen intoString:NULL];
 			continue;
 		}
+		//	Also skip named placeholders
+		if ([[[scanner string] substringWithRange:NSMakeRange([scanner scanLocation]-1, 2)] isEqualToString:kLKPlaceholderNamedOpen]) {
+			[scanner scanUpToString:kLKPlaceholderOpen intoString:NULL];
+			continue;
+		}
 		[scanner scanUpToString:kLKPlaceholderPositionalClose intoString:&aPlaceholder];
 		//	Try to make that string an integer
 		NSInteger	i = [aPlaceholder integerValue];
 		if (i > 0) {
-			[newIndexes addIndex:i];
+			[newPositions addObject:[NSNumber numberWithInteger:i]];
 		}
 		[scanner scanUpToString:kLKPlaceholderOpen intoString:NULL];
 	}
 	
-	return newIndexes;
+	return newPositions;
 }
 
 
@@ -104,15 +109,16 @@ NSString	*const	kLKPlaceholderNamedClose = @">@";
 	NSMutableArray	*usedValues = [NSMutableArray arrayWithCapacity:[array count]];
 	
 	//	Handle positionally marked placeholders first
-	NSIndexSet	*placeholderList = [self placeholderIndexes];
-	[placeholderList enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+	NSArray	*placeholderList = [self placeholderPositions];
+	for (NSNumber *aPosition in placeholderList) {
+		NSUInteger	idx = [aPosition integerValue];
 		NSString	*fullPlaceholder = [NSString stringWithFormat:@"%@%d%@", kLKPlaceholderOpen, idx, kLKPlaceholderPositionalClose];
 		if ([array count] >= idx) {
 			NSRange	aRange = [newSelf rangeOfString:fullPlaceholder];
 			[newSelf replaceCharactersInRange:aRange withString:[array objectAtIndex:(idx-1)]];
 			[usedValues addObject:[array objectAtIndex:(idx-1)]];
 		}
-	}];
+	}
 	
 	//	Then clean up any non-positional in left-to-right order
 	NSMutableArray	*unusedValues = [[array mutableCopy] autorelease];
@@ -175,6 +181,11 @@ NSString	*const	kLKPlaceholderNamedClose = @">@";
 #endif
 	NSURL			*fileURL = nil;
 	NSFileManager	*fileManager = [NSFileManager defaultManager];
+	
+	//	Find the Content for MacOS X 
+	if ([fileManager fileExistsAtPath:[theResourcesPath stringByAppendingPathComponent:@"Contents"]]) {
+		theResourcesPath = [theResourcesPath stringByAppendingPathComponent:@"Contents"];
+	}
 	
 	//	Find the correct Resources Path for MacOS X or iOS
 	if ([fileManager fileExistsAtPath:[theResourcesPath stringByAppendingPathComponent:kLKStringHelperResourcesFolderName]]) {

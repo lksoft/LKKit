@@ -14,6 +14,7 @@ extern	NSString	*const	kLKNeuterGender;
 
 @interface NSString (NSString_LKHelper)
 - (NSArray *)placeholderNames;
+- (NSArray *)placeholderPositions;
 - (NSString *)stringFormattedWithArray:(NSArray *)array;
 - (NSString *)stringFormattedWithDictionary:(NSDictionary *)dict;
 
