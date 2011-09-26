@@ -11,6 +11,7 @@
 @interface LKError : NSError
 - (NSString *)localizeWithFormat:(NSString *)format;
 - (NSString *)localizeWithFormat:(NSString *)format andValuesSelector:(SEL)valueSelector;
+- (NSString *)localizeWithFormat:(NSString *)format forCode:(NSInteger)aCode andValuesSelector:(SEL)valueSelector;
 
 + (LKError *)lkErrorWithCode:(NSInteger)aCode fromSender:(id)sender;
 + (LKError *)lkErrorWithCode:(NSInteger)aCode fromSender:(id)sender userInfo:(NSDictionary *)userDict;
@@ -25,15 +26,15 @@ extern	NSString	*kLKErrorTableName;
 //	Convenience Macros
 #define	LKPresentErrorCodeUsingDict(theCode, theDict) \
 { \
-	LKError	*error = [LKError lkErrorWithCode:theCode fromSender:self userInfo:theDict]; \
+	LKError	*anLKError = [LKError lkErrorWithCode:theCode fromSender:self userInfo:theDict]; \
 	/*	if we are not on the main thread, push it there	*/ \
 	if ([NSThread currentThread] != [NSThread mainThread]) { \
 		dispatch_queue_t	mainQueue = dispatch_get_main_queue(); \
 		dispatch_sync(mainQueue, ^(void) { \
-			[self presentError:error]; \
+			[self presentError:anLKError]; \
 		}); \
 	} \
-	else {[self presentError:error];} \
+	else {[self presentError:anLKError];} \
 }
 #define	LKPresentErrorCode(theCode)		LKPresentErrorCodeUsingDict(theCode, nil)
 

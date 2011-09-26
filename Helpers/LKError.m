@@ -107,21 +107,42 @@
 }
 
 - (NSString *)localizeWithFormat:(NSString *)format {
-	return [self localizeWithFormat:format andValuesSelector:NULL];
+	return [self localizeWithFormat:format forCode:0 andValuesSelector:NULL];
 }
 
 - (NSString *)localizeWithFormat:(NSString *)format andValuesSelector:(SEL)valueSelector {
-	NSString	*keyName = [NSString stringWithFormat:format, [self code]];
+	return [self localizeWithFormat:format forCode:0 andValuesSelector:valueSelector];
+}
+
+- (NSString *)localizeWithFormat:(NSString *)format forCode:(NSInteger)aCode andValuesSelector:(SEL)valueSelector {
+	NSInteger	myCode = (aCode == 0)?[self code]:aCode;
+	NSString	*keyName = [NSString stringWithFormat:format, myCode];
 	NSString	*localized = NSLocalizedStringFromTable(keyName, kLKErrorTableName, @"");
-	
-	//	If we have a valueSelector, see if we need to use it
-	if (valueSelector != NULL) {
-		id <NSObject>	delegate = (id <NSObject>)[[self userInfo] valueForKey:kLKErrorDelegateKey];
-		//	If there are some placeholders, get the values to replace
-		if (([delegate respondsToSelector:valueSelector]) &&
-			([localized rangeOfString:@"%@"].location != NSNotFound)) {
-			NSArray	*values = [delegate performSelector:valueSelector withObject:self];
-			localized = [localized stringFormattedWithArray:values];
+
+	//	If we didn't get a value, try a grouped value
+	if ([localized hasPrefix:[NSString stringWithFormat:@"%d", myCode]]) {
+		//	If we didn't find a real value, then try getting a generic value
+		NSInteger	floored = [self code] - ([self code] % 100);
+		keyName = [NSString stringWithFormat:format, floored];
+		localized = NSLocalizedStringFromTable(keyName, kLKErrorTableName, @"");
+		//	Again test, though this time return nil, if not found
+		if ([localized hasPrefix:[NSString stringWithFormat:@"%d", floored]]) {
+			localized = nil;
+		}
+	}
+	else {
+		//	First try to replace with dictionary
+		localized = [localized stringFormattedWithDictionary:[self userInfo]];
+		//	If we have a valueSelector, see if we need to use it
+		if (valueSelector != NULL) {
+			id <NSObject>	delegate = (id <NSObject>)[[self userInfo] valueForKey:kLKErrorDelegateKey];
+			//	If there are some placeholders, get the values to replace
+			if (([delegate respondsToSelector:valueSelector]) &&
+				(([localized rangeOfString:@"%@"].location != NSNotFound) ||
+				 ([localized rangeOfString:@"%1$@"].location != NSNotFound))) {
+				NSArray	*values = [delegate performSelector:valueSelector withObject:self];
+				localized = [localized stringFormattedWithArray:values];
+			}
 		}
 	}
 	return localized;
