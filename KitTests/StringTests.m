@@ -174,8 +174,92 @@
 
 #pragma mark FormatWithDict
 
+-  (void)test120_Format_Dict_Normal_Only {
+	NSDictionary	*dict = [NSDictionary dictionaryWithObjectsAndKeys:@"one", @"name", @"two", @"label", nil];
+	NSString		*string = [@"Here is a %@ that %@ should have %@ and %@ in it %@." stringFormattedWithDictionary:dict];
+	STAssertEqualObjects(string, @"Here is a %@ that %@ should have %@ and %@ in it %@.", nil);
+}
+
+-  (void)test121_Format_Dict_Normal_Positional {
+	NSDictionary	*dict = [NSDictionary dictionaryWithObjectsAndKeys:@"one", @"name", @"two", @"label", nil];
+	NSString		*string = [@"Here is a %@ that %1$@ should have %@ and %3$@ in it %2$@." stringFormattedWithDictionary:dict];
+	STAssertEqualObjects(string, @"Here is a %@ that %1$@ should have %@ and %3$@ in it %2$@.", nil);
+}
+
+-  (void)test122_Format_Dict {
+	NSDictionary	*dict = [NSDictionary dictionaryWithObjectsAndKeys:@"one", @"name", @"two", @"label", nil];
+	NSString		*string = [@"Here is a simple '%<name>@' with a '%<label>@'." stringFormattedWithDictionary:dict];
+	STAssertEqualObjects(string, @"Here is a simple 'one' with a 'two'.", nil);
+}
+
+-  (void)test123_Format_Dict_With_Normal {
+	NSDictionary	*dict = [NSDictionary dictionaryWithObjectsAndKeys:@"one", @"name", @"two", @"label", nil];
+	NSString		*string = [@"Here is %@ a simple '%<name>@' with %@ a '%<label>@'." stringFormattedWithDictionary:dict];
+	STAssertEqualObjects(string, @"Here is %@ a simple 'one' with %@ a 'two'.", nil);
+}
+
+-  (void)test124_Format_Dict_With_Positional {
+	NSDictionary	*dict = [NSDictionary dictionaryWithObjectsAndKeys:@"one", @"name", @"two", @"label", nil];
+	NSString		*string = [@"Here is %1$@ a simple '%<name>@' with %2$@ a '%<label>@'." stringFormattedWithDictionary:dict];
+	STAssertEqualObjects(string, @"Here is %1$@ a simple 'one' with %2$@ a 'two'.", nil);
+}
+
+-  (void)test125_Format_Dict_With_Positional_Normal {
+	NSDictionary	*dict = [NSDictionary dictionaryWithObjectsAndKeys:@"one", @"name", @"two", @"label", @"three", @"thing", nil];
+	NSString		*string = [@"Here is %@ a simple '%<name>@' with %1$@ a '%<label>@'." stringFormattedWithDictionary:dict];
+	STAssertEqualObjects(string, @"Here is %@ a simple 'one' with %1$@ a 'two'.", nil);
+}
+
 
 #pragma mark FormatWithArray
+
+-  (void)test130_Format_Array_Named_Only {
+	NSArray		*array = [NSArray arrayWithObjects:@"one", @"two", @"thing", nil];
+	NSString	*string = [@"Here is a %<name>@ that should have %<label>@ in it." stringFormattedWithArray:array];
+	STAssertEqualObjects(string, @"Here is a %<name>@ that should have %<label>@ in it.", nil);
+}
+
+-  (void)test131_Format_Array_Normal_Only {
+	NSArray		*array = [NSArray arrayWithObjects:@"one", @"two", @"thing", nil];
+	NSString	*string = [@"Here is a '%@' that should have '%@' in it." stringFormattedWithArray:array];
+	STAssertEqualObjects(string, @"Here is a 'one' that should have 'two' in it.", nil);
+}
+
+-  (void)test132_Format_Array_Positional_Only {
+	NSArray		*array = [NSArray arrayWithObjects:@"one", @"two", @"thing", nil];
+	NSString	*string = [@"Here is a '%1$@' that should have '%2$@' in it." stringFormattedWithArray:array];
+	STAssertEqualObjects(string, @"Here is a 'one' that should have 'two' in it.", nil);
+}
+
+-  (void)test133_Format_Array_Positional_Only_Disordered {
+	NSArray		*array = [NSArray arrayWithObjects:@"one", @"two", @"thing", nil];
+	NSString	*string = [@"Here is a '%2$@' that should have '%1$@' in it." stringFormattedWithArray:array];
+	STAssertEqualObjects(string, @"Here is a 'two' that should have 'one' in it.", nil);
+}
+
+-  (void)test134_Format_Array_Positional_Only_Discontinuous {
+	NSArray		*array = [NSArray arrayWithObjects:@"one", @"two", @"thing", nil];
+	NSString	*string = [@"Here is a '%3$@' that should have '%1$@' in it." stringFormattedWithArray:array];
+	STAssertEqualObjects(string, @"Here is a 'thing' that should have 'one' in it.", nil);
+}
+
+-  (void)test135_Format_Array_Positional_With_Normal {
+	NSArray		*array = [NSArray arrayWithObjects:@"one", @"two", @"thing", nil];
+	NSString	*string = [@"Here is a '%2$@' that should have '%1$@' in it(%@)." stringFormattedWithArray:array];
+	STAssertEqualObjects(string, @"Here is a 'two' that should have 'one' in it(thing).", nil);
+}
+
+-  (void)test136_Format_Array_Positional_With_Normal2 {
+	NSArray		*array = [NSArray arrayWithObjects:@"one", @"two", @"thing", nil];
+	NSString	*string = [@"Here is a '%2$@' that should(%@) have '%1$@' in it." stringFormattedWithArray:array];
+	STAssertEqualObjects(string, @"Here is a 'two' that should(thing) have 'one' in it.", nil);
+}
+
+-  (void)test137_Format_Array_Positional_With_Normal_Named {
+	NSArray		*array = [NSArray arrayWithObjects:@"one", @"two", @"thing", nil];
+	NSString	*string = [@"Here is a '%2$@' that should have '%1$@' (%@) in it%<name>@." stringFormattedWithArray:array];
+	STAssertEqualObjects(string, @"Here is a 'two' that should have 'one' (thing) in it%<name>@.", nil);
+}
 
 
 

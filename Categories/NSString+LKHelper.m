@@ -125,7 +125,9 @@ NSString	*const	kLKPlaceholderNamedClose = @">@";
 	[unusedValues removeObjectsInArray:usedValues];
 	for (NSUInteger j = 0; j < [unusedValues count]; j++) {
 		NSRange	aRange = [newSelf rangeOfString:kLKPlaceholderNormal];
-		[newSelf replaceCharactersInRange:aRange withString:[unusedValues objectAtIndex:j]];
+		if (aRange.location != NSNotFound) {
+			[newSelf replaceCharactersInRange:aRange withString:[unusedValues objectAtIndex:j]];
+		}
 	}
 	
 	return [NSString stringWithString:newSelf];
