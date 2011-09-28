@@ -31,10 +31,10 @@ extern	NSString	*kLKErrorTableName;
 	if ([NSThread currentThread] != [NSThread mainThread]) { \
 		dispatch_queue_t	mainQueue = dispatch_get_main_queue(); \
 		dispatch_sync(mainQueue, ^(void) { \
-			[self presentError:anLKError]; \
+			[NSApp presentError:anLKError]; \
 		}); \
 	} \
-	else {[self presentError:anLKError];} \
+	else {[NSApp presentError:anLKError];} \
 }
 #define	LKPresentErrorCode(theCode)		LKPresentErrorCodeUsingDict(theCode, nil)
 
