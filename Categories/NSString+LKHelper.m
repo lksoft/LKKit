@@ -261,4 +261,14 @@ NSString	*const	kLKPlaceholderNamedClose = @">@";
     return [NSString stringWithFormat:@"%@%@", numberString, ordinalValue?ordinalValue:@""];
 }
 
+
+#pragma mark - Path Utilities
+
+- (BOOL)userHasAccessRights {
+	if (0 != access([self fileSystemRepresentation], W_OK) || 0 != access([[self stringByDeletingLastPathComponent] fileSystemRepresentation], W_OK)) {
+		return NO;
+	}
+	return YES;
+}
+
 @end

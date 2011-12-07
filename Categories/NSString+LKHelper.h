@@ -22,4 +22,6 @@ extern	NSString	*const	kLKNeuterGender;
 + (NSString *)ordinalStringForNumber:(NSNumber *)number;
 + (NSString *)ordinalStringForNumber:(NSNumber *)number gender:(const NSString *)gender;
 + (NSString *)ordinalStringForNumber:(NSNumber *)number usingLocale:(NSLocale *)locale gender:(const NSString *)gender case:(NSString *)caseName;
+
+- (BOOL)userHasAccessRights;
 @end
