@@ -265,8 +265,16 @@ NSString	*const	kLKPlaceholderNamedClose = @">@";
 #pragma mark - Path Utilities
 
 - (BOOL)userHasAccessRights {
-	if (0 != access([self fileSystemRepresentation], W_OK) || 0 != access([[self stringByDeletingLastPathComponent] fileSystemRepresentation], W_OK)) {
-		return NO;
+	
+	if ([[NSFileManager defaultManager] fileExistsAtPath:self]) {
+		if (0 != access([self fileSystemRepresentation], W_OK)) {
+			return NO;
+		}
+	}
+	if ([[NSFileManager defaultManager] fileExistsAtPath:[self stringByDeletingLastPathComponent]]) {
+		if (0 != access([[self stringByDeletingLastPathComponent] fileSystemRepresentation], W_OK)) {
+			return NO;
+		}
 	}
 	return YES;
 }
