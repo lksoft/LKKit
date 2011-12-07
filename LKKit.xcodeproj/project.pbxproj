@@ -67,6 +67,7 @@
 		D2DC0F9C1428B1D6005D2F90 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D2DC0F9A1428B1D6005D2F90 /* InfoPlist.strings */; };
 		D2DC0FA71428B24A005D2F90 /* LKLogHelperTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = D2B5FBC213D5C0D700630112 /* LKLogHelperTestCase.m */; };
 		D2DC0FA81428B251005D2F90 /* LKLogHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = D2B5FBBD13D5B64400630112 /* LKLogHelper.m */; };
+		D2EB8252148FA75700C8B0DB /* NSViewController+LKCollectionItemFix.m in Sources */ = {isa = PBXBuildFile; fileRef = D2EB8251148FA75700C8B0DB /* NSViewController+LKCollectionItemFix.m */; };
 		D2F71D1413AFEB0700082BC9 /* GHUnitIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2F71D1313AFEB0700082BC9 /* GHUnitIOS.framework */; };
 /* End PBXBuildFile section */
 
@@ -151,6 +152,10 @@
 		D2DC0F921428B1D6005D2F90 /* MacKitTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacKitTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2DC0F991428B1D6005D2F90 /* MacRunnerTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MacRunnerTests-Info.plist"; sourceTree = "<group>"; };
 		D2DC0F9B1428B1D6005D2F90 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		D2EB8250148FA75700C8B0DB /* NSViewController+LKCollectionItemFix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSViewController+LKCollectionItemFix.h"; sourceTree = "<group>"; };
+		D2EB8251148FA75700C8B0DB /* NSViewController+LKCollectionItemFix.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSViewController+LKCollectionItemFix.m"; sourceTree = "<group>"; };
+		D2EB8254148FA76900C8B0DB /* NSFileManager+LKAdditions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+LKAdditions.h"; sourceTree = "<group>"; };
+		D2EB8255148FA76900C8B0DB /* NSFileManager+LKAdditions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager+LKAdditions.m"; sourceTree = "<group>"; };
 		D2F71D1313AFEB0700082BC9 /* GHUnitIOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GHUnitIOS.framework; path = ../../../Library/Frameworks/GHUnitIOS.framework; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -291,6 +296,10 @@
 				D264350913531408006C7A08 /* NSLocale+LKHelpers.m */,
 				D2C9AE6D13A02FBC00CD9998 /* DOMNode+LKHelpers.h */,
 				D2C9AE6E13A02FBC00CD9998 /* DOMNode+LKHelpers.m */,
+				D2EB8250148FA75700C8B0DB /* NSViewController+LKCollectionItemFix.h */,
+				D2EB8251148FA75700C8B0DB /* NSViewController+LKCollectionItemFix.m */,
+				D2EB8254148FA76900C8B0DB /* NSFileManager+LKAdditions.h */,
+				D2EB8255148FA76900C8B0DB /* NSFileManager+LKAdditions.m */,
 			);
 			path = Categories;
 			sourceTree = "<group>";
@@ -583,6 +592,7 @@
 				D2B5FC8A13D88E1000630112 /* NSObject+LKObject.m in Sources */,
 				D2730FED142A1F0300EB5CB7 /* LKCGStructs.m in Sources */,
 				D2D1E6C41430792E002FF1B1 /* LKError.m in Sources */,
+				D2EB8252148FA75700C8B0DB /* NSViewController+LKCollectionItemFix.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
