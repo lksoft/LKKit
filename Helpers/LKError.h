@@ -19,9 +19,9 @@
 @end
 
 
-extern	NSString	*kLKErrorDomain;
-extern	NSString	*kLKErrorDelegateKey;
-extern	NSString	*kLKErrorTableName;
+extern	NSString*	const	kLKErrorDomain;
+extern	NSString*	const	kLKErrorDelegateKey;
+extern	NSString*	const	kLKErrorTableName;
 
 //	Convenience Macros
 #define	LKPresentErrorCodeUsingDict(theCode, theDict) \

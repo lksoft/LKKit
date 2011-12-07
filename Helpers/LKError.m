@@ -150,7 +150,7 @@
 
 @end
 
-NSString	*kLKErrorDomain = @"LKErrorDomain";
-NSString	*kLKErrorDelegateKey = @"LKErrorDelegate";
-NSString	*kLKErrorTableName = @"errors";
+NSString*	const	kLKErrorDomain = @"LKErrorDomain";
+NSString*	const	kLKErrorDelegateKey = @"LKErrorDelegate";
+NSString*	const	kLKErrorTableName = @"errors";
 
