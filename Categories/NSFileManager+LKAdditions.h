@@ -13,5 +13,6 @@ NSInteger	const	kLKAuthenticationFailure;
 #undef STR_CONST_LOCAL
 
 @interface NSFileManager (LKAdditions)
-- (BOOL)moveWithForcedAuthenticationFromPath:(NSString *)src toPath:(NSString *)dst error:(NSError **)error;
+- (BOOL)moveWithAuthenticationFromPath:(NSString *)fromPath toPath:(NSString *)toPath error:(NSError **)error;
+- (BOOL)copyWithAuthenticationFromPath:(NSString *)fromPath toPath:(NSString *)toPath error:(NSError **)error;
 @end

@@ -7,8 +7,12 @@
 //
 
 #import "NSFileManager+LKAdditions.h"
+#import "NSString+LKHelper.h"
 
 #import <sys/stat.h>
+
+
+#define AUTH_EXPIRATION_TIME	(60 * 60 * 5)	//	5 minutes
 
 
 NSInteger	const	kLKAuthenticationFailure = 30001;
@@ -16,29 +20,122 @@ NSInteger	const	kLKAuthenticationFailure = 30001;
 //	Function to authorize
 static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authorization, const char* executablePath, AuthorizationFlags options, const char* const* arguments);
 
-@interface NSFileManager (LKExtendedAttributes)
+//	Static variable to allow for a period of time that the authorization is valid for
+static	AuthorizationRef	MBMAuthorization = NULL;
+static	dispatch_queue_t	MBMAuthorizationCreationQueue = NULL;
+
+@interface NSFileManager (LKInternal)
+- (void)deauthorize:(NSTimer *)theTimer;
+- (BOOL)executeWithForcedAuthenticationFromPath:(NSString *)src toPath:(NSString *)dst move:(BOOL)shouldMove error:(NSError **)error;
 - (void)releaseFromQuarantine:(NSString*)root;
 @end
 
 
 @implementation NSFileManager (LKAdditions)
 
+#pragma mark - Authentication External Methods
 
-- (BOOL)moveWithForcedAuthenticationFromPath:(NSString *)src toPath:(NSString *)dst error:(NSError **)error {
+- (BOOL)moveWithAuthenticationFromPath:(NSString *)fromPath toPath:(NSString *)toPath error:(NSError **)error {
+	
+	//	Ensure that the user has access to both paths
+	if ([fromPath userHasAccessRights] && [toPath userHasAccessRights]) {
+		//	Just do the move simply
+		if (![self moveItemAtPath:fromPath toPath:toPath error:error]) {
+			ALog(@"Error moving bundle (enable/disable):%@", *error);
+			return NO;
+		}
+	}
+	else {
+		//	Otherwise use the authentication mechanism
+		if (![self executeWithForcedAuthenticationFromPath:fromPath toPath:toPath move:YES error:error]) {
+			ALog(@"Error moving bundle (enable/disable):%@", *error);
+			return NO;
+		}
+	}
+	
+	return YES;
+}
+
+- (BOOL)copyWithAuthenticationFromPath:(NSString *)fromPath toPath:(NSString *)toPath error:(NSError **)error {
+	
+	//	Ensure that the user has access to both paths
+	if ([fromPath userHasAccessRights] && [toPath userHasAccessRights]) {
+		//	Just do the copy simply
+		if (![self copyItemAtPath:fromPath toPath:toPath error:error]) {
+			ALog(@"Error moving bundle (enable/disable):%@", *error);
+			return NO;
+		}
+	}
+	else {
+		//	Otherwise use the authentication mechanism
+		if (![self executeWithForcedAuthenticationFromPath:fromPath toPath:toPath move:NO error:error]) {
+			ALog(@"Error moving bundle (enable/disable):%@", *error);
+			return NO;
+		}
+	}
+	
+	return YES;
+}
+
+
+@end
+
+
+
+#pragma mark - Extended Attributes
+
+#import <sys/xattr.h>
+
+@implementation NSFileManager (LKInternal)
+
+#pragma mar - Work Methods
+
+- (void)deauthorize:(NSTimer *)theTimer {
+	
+	LKAssert(MBMAuthorizationCreationQueue != NULL, @"The Authorization queue is not valid inside a deauthorize call");
+	
+	dispatch_sync(MBMAuthorizationCreationQueue, ^{
+		if (MBMAuthorization != NULL) {
+			AuthorizationFree(MBMAuthorization, 0);
+			MBMAuthorization = NULL;
+		}
+	});
+}
+
+- (BOOL)executeWithForcedAuthenticationFromPath:(NSString *)src toPath:(NSString *)dst move:(BOOL)shouldMove error:(NSError **)error {
 	const char* srcPath = [src fileSystemRepresentation];
 	const char* dstPath = [dst fileSystemRepresentation];
 	
+	//	Get the destinations user info in case it is needed
 	struct stat dstSB;
 	stat(dstPath, &dstSB);
 	
-	AuthorizationRef auth = NULL;
-	OSStatus authStat = errAuthorizationDenied;
-	while (authStat == errAuthorizationDenied) {
-		authStat = AuthorizationCreate(NULL,
-									   kAuthorizationEmptyEnvironment,
-									   kAuthorizationFlagDefaults,
-									   &auth);
-	}
+	//	Create our queue if it hasn't been done already
+	static	dispatch_once_t		once;
+	dispatch_once(&once, ^{ MBMAuthorizationCreationQueue = dispatch_queue_create("com.littleknownsoftware.MBMAuthorizationCreation", NULL); });
+	
+	//	Create our authorization if we don't have one (use a block here)
+	__block OSStatus authStat = errAuthorizationDenied;
+	dispatch_sync(MBMAuthorizationCreationQueue, ^{
+		if (MBMAuthorization == NULL) {
+			while (authStat == errAuthorizationDenied) {
+				authStat = AuthorizationCreate(NULL, kAuthorizationEmptyEnvironment, kAuthorizationFlagDefaults, &MBMAuthorization);
+			}
+			
+			//	If the auth was successful, set up a timer to deauthorize soon
+			if (authStat == errAuthorizationSuccess) {
+				//	Then create a timer that will release the Authorization in 5 minutes
+				[NSTimer scheduledTimerWithTimeInterval:AUTH_EXPIRATION_TIME target:self selector:@selector(deauthorize:) userInfo:nil repeats:NO];
+			}
+			else {
+				//	Reset the Authorization to NULL to be sure
+				MBMAuthorization = NULL;
+			}
+		}
+		else {
+			authStat = errAuthorizationSuccess;
+		}
+	});
 	
 	BOOL res = NO;
 	if (authStat == errAuthorizationSuccess) {
@@ -48,11 +145,28 @@ static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authoriza
 		snprintf(uidgid, sizeof(uidgid), "%d:%d",
 				 dstSB.st_uid, dstSB.st_gid);
 		
+		//	Test to see if a destination path exists and set command to remove
+		char	*removeCommand = NULL;
+		char	*chownCommand = NULL;
+		if ([self fileExistsAtPath:dst]) {
+			removeCommand = "/bin/rm";
+			chownCommand = "/usr/sbin/chown";
+		}
+		//	Then set the command for the copy/move
+		char	*executeCommand = "/bin/cp";
+		char	*args = "-Rf";
+		if (shouldMove) {
+			executeCommand = "/bin/mv";
+			args = "-f";
+		}
+		
 		const char* executables[] = {
-			"/bin/mv",
+			removeCommand,
+			executeCommand,
 			NULL,  // pause here and do some housekeeping before
+			NULL,
 			// continuing
-			"/usr/sbin/chown",
+			chownCommand,
 			NULL   // stop here for real
 		};
 		
@@ -60,7 +174,8 @@ static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authoriza
 		// including the NULL that signals the end of an argument
 		// list.
 		const char* const argumentLists[][4] = {
-			{ "-f", srcPath, dstPath, NULL },  // mv
+			{ "-rf", dstPath, NULL },  // rm
+			{ args, srcPath, dstPath, NULL },  // mv/cp
 			{ NULL },  // pause
 			{ "-R", uidgid, dstPath, NULL },  // chown
 			{ NULL }  // stop
@@ -68,9 +183,13 @@ static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authoriza
 		
 		// Process the commands up until the first NULL
 		unsigned int commandIndex = 0;
+		//	If the removeDest value is NULL, skip the first executable
+		if (removeCommand == NULL) {
+			commandIndex++;
+		}
 		for (; executables[commandIndex] != NULL; ++commandIndex) {
 			if (res) {
-				res = AuthorizationExecuteWithPrivilegesAndWait(auth, executables[commandIndex], kAuthorizationFlagDefaults, argumentLists[commandIndex]);
+				res = AuthorizationExecuteWithPrivilegesAndWait(MBMAuthorization, executables[commandIndex], kAuthorizationFlagDefaults, argumentLists[commandIndex]);
 			}
 		}
 		
@@ -96,11 +215,9 @@ static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authoriza
 		
 		for (; executables[commandIndex] != NULL; ++commandIndex) {
 			if (res) {
-				res = AuthorizationExecuteWithPrivilegesAndWait(auth, executables[commandIndex], kAuthorizationFlagDefaults, argumentLists[commandIndex]);
+				res = AuthorizationExecuteWithPrivilegesAndWait(MBMAuthorization, executables[commandIndex], kAuthorizationFlagDefaults, argumentLists[commandIndex]);
 			}
 		}
-		
-		AuthorizationFree(auth, 0);
 		
 		if (!res)
 		{
@@ -118,14 +235,7 @@ static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authoriza
 	return res;
 }
 
-@end
-
-
-//#import <dlfcn.h>
-//#import <errno.h>
-#import <sys/xattr.h>
-
-@implementation NSFileManager (LKExtendedAttributes)
+#pragma mark - Extended Attributes
 
 - (int)removeXAttr:(const char*)name fromFile:(NSString*)file options:(int)options {
 	
@@ -188,7 +298,7 @@ static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authoriza
 @end
 
 
-// Authorization code based on generous contribution from Allan Odgaard. Thanks, Allan!
+#pragma mark - Authentication Helper Function
 
 static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authorization, const char* executablePath, AuthorizationFlags options, const char* const* arguments) {
 	
