@@ -16,6 +16,7 @@
 
 
 NSInteger	const	kLKAuthenticationFailure = 30001;
+NSInteger	const	kLKAuthenticationNotGiven = 30002;
 
 //	Function to authorize
 static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authorization, const char* executablePath, AuthorizationFlags options, const char* const* arguments);
@@ -48,7 +49,9 @@ static	dispatch_queue_t	MBMAuthorizationCreationQueue = NULL;
 	else {
 		//	Otherwise use the authentication mechanism
 		if (![self executeWithForcedAuthenticationFromPath:fromPath toPath:toPath move:YES error:error]) {
-			ALog(@"Error moving bundle (enable/disable):%@", *error);
+			if ([*error code] != kLKAuthenticationNotGiven) {
+				ALog(@"Error moving bundle (enable/disable):%@", *error);
+			}
 			return NO;
 		}
 	}
@@ -69,7 +72,9 @@ static	dispatch_queue_t	MBMAuthorizationCreationQueue = NULL;
 	else {
 		//	Otherwise use the authentication mechanism
 		if (![self executeWithForcedAuthenticationFromPath:fromPath toPath:toPath move:NO error:error]) {
-			ALog(@"Error moving bundle (enable/disable):%@", *error);
+			if ([*error code] != kLKAuthenticationNotGiven) {
+				ALog(@"Error moving bundle (enable/disable):%@", *error);
+			}
 			return NO;
 		}
 	}
@@ -230,7 +235,7 @@ static	dispatch_queue_t	MBMAuthorizationCreationQueue = NULL;
 	else
 	{
 		if (error != nil)
-			*error = [NSError errorWithDomain:kLKErrorDomain code:kLKAuthenticationFailure userInfo:[NSDictionary dictionaryWithObject:@"Couldn't get permission to authenticate." forKey:NSLocalizedDescriptionKey]];
+			*error = [NSError errorWithDomain:kLKErrorDomain code:kLKAuthenticationNotGiven userInfo:[NSDictionary dictionaryWithObject:@"Couldn't get permission to authenticate." forKey:NSLocalizedDescriptionKey]];
 	}
 	return res;
 }
@@ -305,8 +310,7 @@ static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authoriza
 	sig_t oldSigChildHandler = signal(SIGCHLD, SIG_DFL);
 	BOOL returnValue = YES;
 	
-	if (AuthorizationExecuteWithPrivileges(authorization, executablePath, options, (char* const*)arguments, NULL) == errAuthorizationSuccess)
-	{
+	if (AuthorizationExecuteWithPrivileges(authorization, executablePath, options, (char* const*)arguments, NULL) == errAuthorizationSuccess) {
 		int status;
 		pid_t pid = wait(&status);
 		if (pid == -1 || !WIFEXITED(status) || WEXITSTATUS(status) != 0)

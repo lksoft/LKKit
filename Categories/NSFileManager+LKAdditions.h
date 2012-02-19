@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 NSInteger	const	kLKAuthenticationFailure;
+NSInteger	const	kLKAuthenticationNotGiven;
 
 #undef STR_CONST_LOCAL
 
