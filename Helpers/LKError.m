@@ -13,13 +13,14 @@
 #define RECOVERY_OPTIONS_SELECTOR_NAME			@"recoveryOptionsForError:"
 #define RECOVERY_ATTEMPTOR_SELECTOR_NAME		@"recoveryAttemptorForError:"
 #define FORMAT_DESC_VALUES_SELECTOR_NAME		@"formatDescriptionValuesForError:"
-#define FORMAT_FAILURE_VALUES_SELECTOR_NAME		@"formatFailueValuesForError:"
+#define FORMAT_FAILURE_VALUES_SELECTOR_NAME		@"formatFailureValuesForError:"
 #define FORMAT_SUGGESTION_VALUES_SELECTOR_NAME	@"formatSuggestionValuesForError:"
 #define ERROR_DOMAIN_SELECTOR_NAME				@"overrideErrorDomainForCode:"
 
 #define DESCRIPTION_FORMAT			@"%d-description"
 #define FAILURE_REASON_FORMAT		@"%d-failure-reason"
 #define RECOVERY_SUGGESTION_FORMAT	@"%d-recovery-suggestion"
+#define RECOVERY_OPTIONS_FORMAT		@"%%d-button-%d"
 
 @interface LKError ()
 @end
@@ -95,6 +96,25 @@
 		options = [delegate performSelector:NSSelectorFromString(RECOVERY_OPTIONS_SELECTOR_NAME) withObject:self];
 	}
 	return options;
+}
+
+- (NSArray *)localizedRecoveryOptionList {
+	NSMutableArray	*options = [NSMutableArray array];
+	
+	//	Loop to find all buttons
+	for (NSInteger i = 1;; i++) {
+		NSString	*format = [NSString stringWithFormat:RECOVERY_OPTIONS_FORMAT, i];
+		NSString	*compareValue = [NSString stringWithFormat:format, [self code]];
+		NSString	*value = [self localizeWithFormat:format];
+		//	If it wasn't found, there are no more options
+		if ((value == nil) || [compareValue isEqualToString:value]) {
+			break;
+		}
+		[options addObject:value];
+	}
+	
+	//	If the options are not empty, return them
+	return IsEmpty(options)?nil:[NSArray arrayWithArray:options];
 }
 
 - (id)recoveryAttempter {

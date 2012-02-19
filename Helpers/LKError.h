@@ -13,6 +13,8 @@
 - (NSString *)localizeWithFormat:(NSString *)format andValuesSelector:(SEL)valueSelector;
 - (NSString *)localizeWithFormat:(NSString *)format forCode:(NSInteger)aCode andValuesSelector:(SEL)valueSelector;
 
+- (NSArray *)localizedRecoveryOptionList;
+
 + (LKError *)lkErrorWithCode:(NSInteger)aCode fromSender:(id)sender;
 + (LKError *)lkErrorWithCode:(NSInteger)aCode fromSender:(id)sender userInfo:(NSDictionary *)userDict;
 + (NSString *)errorDomainForCode:(NSInteger)aCode;
