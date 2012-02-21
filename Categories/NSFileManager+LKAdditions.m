@@ -36,22 +36,26 @@ static	dispatch_queue_t	MBMAuthorizationCreationQueue = NULL;
 
 #pragma mark - Authentication External Methods
 
-- (BOOL)moveWithAuthenticationFromPath:(NSString *)fromPath toPath:(NSString *)toPath error:(NSError **)error {
+- (BOOL)moveWithAuthenticationFromPath:(NSString *)fromPath toPath:(NSString *)toPath overwrite:(BOOL)shouldOverwrite error:(NSError **)error {
 	
 	//	Ensure that the user has access to both paths
 	if ([fromPath userHasAccessRights] && [toPath userHasAccessRights]) {
+		//	Remove any existing file at destPath
+		if ((shouldOverwrite) && [self fileExistsAtPath:toPath]) {
+			if (![self removeItemAtPath:toPath error:error]) {
+				return NO;
+			}
+		}
 		//	Just do the move simply
 		if (![self moveItemAtPath:fromPath toPath:toPath error:error]) {
-			ALog(@"Error moving bundle (enable/disable):%@", *error);
+			LKErr(@"Error moving bundle (enable/disable):%@", *error);
 			return NO;
 		}
 	}
 	else {
 		//	Otherwise use the authentication mechanism
 		if (![self executeWithForcedAuthenticationFromPath:fromPath toPath:toPath move:YES error:error]) {
-			if ([*error code] != kLKAuthenticationNotGiven) {
-				ALog(@"Error moving bundle (enable/disable):%@", *error);
-			}
+			LKErr(@"Error moving bundle (enable/disable):%@", *error);
 			return NO;
 		}
 	}
@@ -59,13 +63,19 @@ static	dispatch_queue_t	MBMAuthorizationCreationQueue = NULL;
 	return YES;
 }
 
-- (BOOL)copyWithAuthenticationFromPath:(NSString *)fromPath toPath:(NSString *)toPath error:(NSError **)error {
+- (BOOL)copyWithAuthenticationFromPath:(NSString *)fromPath toPath:(NSString *)toPath overwrite:(BOOL)shouldOverwrite error:(NSError **)error {
 	
 	//	Ensure that the user has access to both paths
 	if ([fromPath userHasAccessRights] && [toPath userHasAccessRights]) {
+		//	Remove any existing file at destPath
+		if ((shouldOverwrite) && [self fileExistsAtPath:toPath]) {
+			if (![self removeItemAtPath:toPath error:error]) {
+				return NO;
+			}
+		}
 		//	Just do the copy simply
 		if (![self copyItemAtPath:fromPath toPath:toPath error:error]) {
-			ALog(@"Error moving bundle (enable/disable):%@", *error);
+			ALog(@"Error copying bundle (enable/disable):%@", *error);
 			return NO;
 		}
 	}
@@ -73,7 +83,7 @@ static	dispatch_queue_t	MBMAuthorizationCreationQueue = NULL;
 		//	Otherwise use the authentication mechanism
 		if (![self executeWithForcedAuthenticationFromPath:fromPath toPath:toPath move:NO error:error]) {
 			if ([*error code] != kLKAuthenticationNotGiven) {
-				ALog(@"Error moving bundle (enable/disable):%@", *error);
+				ALog(@"Error copying bundle (enable/disable):%@", *error);
 			}
 			return NO;
 		}
