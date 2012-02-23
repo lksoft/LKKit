@@ -27,7 +27,8 @@ static	dispatch_queue_t	MBMAuthorizationCreationQueue = NULL;
 
 @interface NSFileManager (LKInternal)
 - (void)deauthorize:(NSTimer *)theTimer;
-- (BOOL)executeWithForcedAuthenticationFromPath:(NSString *)src toPath:(NSString *)dst move:(BOOL)shouldMove error:(NSError **)error;
+- (BOOL)fileMoveWithAuthenticationIfNeededFromPath:(NSString *)fromPath toPath:(NSString *)toPath shouldCopy:(BOOL)shouldCopy overwrite:(BOOL)shouldOverwrite error:(NSError **)error;
+- (BOOL)executeWithForcedAuthenticationFromPath:(NSString *)src toPath:(NSString *)dst shouldCopy:(BOOL)shouldCopy error:(NSError **)error;
 - (void)releaseFromQuarantine:(NSString*)root;
 @end
 
@@ -36,60 +37,20 @@ static	dispatch_queue_t	MBMAuthorizationCreationQueue = NULL;
 
 #pragma mark - Authentication External Methods
 
-- (BOOL)moveWithAuthenticationFromPath:(NSString *)fromPath toPath:(NSString *)toPath overwrite:(BOOL)shouldOverwrite error:(NSError **)error {
-	
-	//	Ensure that the user has access to both paths
-	if ([fromPath userHasAccessRights] && [toPath userHasAccessRights]) {
-		//	Remove any existing file at destPath
-		if ((shouldOverwrite) && [self fileExistsAtPath:toPath]) {
-			if (![self removeItemAtPath:toPath error:error]) {
-				return NO;
-			}
-		}
-		//	Just do the move simply
-		if (![self moveItemAtPath:fromPath toPath:toPath error:error]) {
-			LKErr(@"Error moving bundle (enable/disable):%@", *error);
-			return NO;
-		}
-	}
-	else {
-		//	Otherwise use the authentication mechanism
-		if (![self executeWithForcedAuthenticationFromPath:fromPath toPath:toPath move:YES error:error]) {
-			LKErr(@"Error moving bundle (enable/disable):%@", *error);
-			return NO;
-		}
-	}
-	
-	return YES;
+- (BOOL)moveWithAuthenticationIfNeededFromPath:(NSString *)fromPath toPath:(NSString *)toPath error:(NSError **)error {
+	return [self fileMoveWithAuthenticationIfNeededFromPath:fromPath toPath:toPath shouldCopy:NO overwrite:YES error:error];
 }
 
-- (BOOL)copyWithAuthenticationFromPath:(NSString *)fromPath toPath:(NSString *)toPath overwrite:(BOOL)shouldOverwrite error:(NSError **)error {
-	
-	//	Ensure that the user has access to both paths
-	if ([fromPath userHasAccessRights] && [toPath userHasAccessRights]) {
-		//	Remove any existing file at destPath
-		if ((shouldOverwrite) && [self fileExistsAtPath:toPath]) {
-			if (![self removeItemAtPath:toPath error:error]) {
-				return NO;
-			}
-		}
-		//	Just do the copy simply
-		if (![self copyItemAtPath:fromPath toPath:toPath error:error]) {
-			ALog(@"Error copying bundle (enable/disable):%@", *error);
-			return NO;
-		}
-	}
-	else {
-		//	Otherwise use the authentication mechanism
-		if (![self executeWithForcedAuthenticationFromPath:fromPath toPath:toPath move:NO error:error]) {
-			if ([*error code] != kLKAuthenticationNotGiven) {
-				ALog(@"Error copying bundle (enable/disable):%@", *error);
-			}
-			return NO;
-		}
-	}
-	
-	return YES;
+- (BOOL)moveWithAuthenticationIfNeededFromPath:(NSString *)fromPath toPath:(NSString *)toPath overwrite:(BOOL)shouldOverwrite error:(NSError **)error {
+	return [self fileMoveWithAuthenticationIfNeededFromPath:fromPath toPath:toPath shouldCopy:NO overwrite:shouldOverwrite error:error];
+}
+
+- (BOOL)copyWithAuthenticationIfNeededFromPath:(NSString *)fromPath toPath:(NSString *)toPath error:(NSError **)error {
+	return [self fileMoveWithAuthenticationIfNeededFromPath:fromPath toPath:toPath shouldCopy:YES overwrite:YES error:error];
+}
+
+- (BOOL)copyWithAuthenticationIfNeededFromPath:(NSString *)fromPath toPath:(NSString *)toPath overwrite:(BOOL)shouldOverwrite error:(NSError **)error {
+	return [self fileMoveWithAuthenticationIfNeededFromPath:fromPath toPath:toPath shouldCopy:YES overwrite:shouldOverwrite error:error];
 }
 
 
@@ -103,7 +64,106 @@ static	dispatch_queue_t	MBMAuthorizationCreationQueue = NULL;
 
 @implementation NSFileManager (LKInternal)
 
-#pragma mar - Work Methods
+#pragma mark - Work Methods
+
+- (BOOL)fileMoveWithAuthenticationIfNeededFromPath:(NSString *)fromPath toPath:(NSString *)toPath shouldCopy:(BOOL)shouldCopy overwrite:(BOOL)shouldOverwrite error:(NSError **)error {
+	
+	NSError		*localError = nil;
+	BOOL		needsSecureMove = NO;
+	
+	//	Remove any existing file at destPath
+	if ([self fileExistsAtPath:toPath]) {
+		if (shouldOverwrite) {
+			if (![self removeItemAtPath:toPath error:&localError]) {
+				
+				switch ([localError code]) {
+					case NSFileWriteVolumeReadOnlyError:
+					case NSFileWriteOutOfSpaceError:
+						//	Cannot continue if this is the case, just return the error
+						if (error != NULL) {
+							*error = localError;
+						}
+						return NO;
+						break;
+						
+					case NSFileLockingError:
+					case NSFileReadUnknownError:
+					case NSFileReadNoPermissionError:
+					case NSFileWriteUnknownError:
+					case NSFileWriteNoPermissionError:
+						needsSecureMove = YES;
+						break;
+						
+						//Can be safely ignored
+					case NSFileNoSuchFileError:
+					case NSFileReadNoSuchFileError:
+					case NSFileWriteInvalidFileNameError:
+					case NSFileReadInvalidFileNameError:
+					default:
+						break;
+				}
+			}
+		}
+		else {
+			//	Create a new error message to return
+			return NO;
+		}
+	}
+	
+	//	Try to just do the move simply
+	if (!needsSecureMove) {
+		BOOL	didSucceed = NO;
+		if (shouldCopy) {
+			didSucceed = [self copyItemAtPath:fromPath toPath:toPath error:&localError];
+		}
+		else {
+			didSucceed = [self moveItemAtPath:fromPath toPath:toPath error:&localError];
+		}
+		if (!didSucceed) {
+			
+			switch ([localError code]) {
+					
+				case NSFileLockingError:
+				case NSFileReadUnknownError:
+				case NSFileReadNoPermissionError:
+				case NSFileWriteUnknownError:
+				case NSFileWriteNoPermissionError:
+					needsSecureMove = YES;
+					break;
+					
+					//	Cannot continue if these are the case
+				case NSFileWriteVolumeReadOnlyError:
+				case NSFileWriteOutOfSpaceError:
+					//	These are also non-solvable errors
+				case NSFileNoSuchFileError:
+				case NSFileReadNoSuchFileError:
+				case NSFileWriteInvalidFileNameError:
+				case NSFileReadInvalidFileNameError:
+					//	Unkonwn errors
+				default:
+					//	Just return the error and write message
+					LKErr(@"Error %@ bundle (enable/disable):%@", (shouldCopy?@"copying":@"moving"), localError);
+					if(error != NULL) {
+						*error = localError;
+					}
+					return NO;
+					break;
+			}
+		}
+	}
+	
+	if (needsSecureMove) {
+		LKLog(@"No Access for %@", toPath);
+		//	Otherwise use the authentication mechanism
+		if (![self executeWithForcedAuthenticationFromPath:fromPath toPath:toPath shouldCopy:shouldCopy error:error]) {
+			LKErr(@"Error %@ bundle (enable/disable):%@", (shouldCopy?@"copying":@"moving"), *error);
+			return NO;
+		}
+	}
+	
+	return YES;
+}
+
 
 - (void)deauthorize:(NSTimer *)theTimer {
 	
@@ -117,7 +177,7 @@ static	dispatch_queue_t	MBMAuthorizationCreationQueue = NULL;
 	});
 }
 
-- (BOOL)executeWithForcedAuthenticationFromPath:(NSString *)src toPath:(NSString *)dst move:(BOOL)shouldMove error:(NSError **)error {
+- (BOOL)executeWithForcedAuthenticationFromPath:(NSString *)src toPath:(NSString *)dst shouldCopy:(BOOL)shouldCopy error:(NSError **)error {
 	const char* srcPath = [src fileSystemRepresentation];
 	const char* dstPath = [dst fileSystemRepresentation];
 	
@@ -168,18 +228,17 @@ static	dispatch_queue_t	MBMAuthorizationCreationQueue = NULL;
 			chownCommand = "/usr/sbin/chown";
 		}
 		//	Then set the command for the copy/move
-		char	*executeCommand = "/bin/cp";
-		char	*args = "-Rf";
-		if (shouldMove) {
-			executeCommand = "/bin/mv";
-			args = "-f";
+		char	*executeCommand = "/bin/mv";
+		char	*args = "-f";
+		if (shouldCopy) {
+			executeCommand = "/bin/cp";
+			args = "-Rf";
 		}
 		
 		const char* executables[] = {
 			removeCommand,
 			executeCommand,
 			NULL,  // pause here and do some housekeeping before
-			NULL,
 			// continuing
 			chownCommand,
 			NULL   // stop here for real
