@@ -22,8 +22,8 @@ NSInteger	const	kLKAuthenticationNotGiven = 30002;
 static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authorization, const char* executablePath, AuthorizationFlags options, const char* const* arguments);
 
 //	Static variable to allow for a period of time that the authorization is valid for
-static	AuthorizationRef	MBMAuthorization = NULL;
-static	dispatch_queue_t	MBMAuthorizationCreationQueue = NULL;
+static	AuthorizationRef	LKAuthorization = NULL;
+static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 
 @interface NSFileManager (LKInternal)
 - (void)deauthorize:(NSTimer *)theTimer;
@@ -167,12 +167,12 @@ static	dispatch_queue_t	MBMAuthorizationCreationQueue = NULL;
 
 - (void)deauthorize:(NSTimer *)theTimer {
 	
-	LKAssert(MBMAuthorizationCreationQueue != NULL, @"The Authorization queue is not valid inside a deauthorize call");
+	LKAssert(LKAuthorizationCreationQueue != NULL, @"The Authorization queue is not valid inside a deauthorize call");
 	
-	dispatch_sync(MBMAuthorizationCreationQueue, ^{
-		if (MBMAuthorization != NULL) {
-			AuthorizationFree(MBMAuthorization, 0);
-			MBMAuthorization = NULL;
+	dispatch_sync(LKAuthorizationCreationQueue, ^{
+		if (LKAuthorization != NULL) {
+			AuthorizationFree(LKAuthorization, 0);
+			LKAuthorization = NULL;
 		}
 	});
 }
@@ -187,14 +187,14 @@ static	dispatch_queue_t	MBMAuthorizationCreationQueue = NULL;
 	
 	//	Create our queue if it hasn't been done already
 	static	dispatch_once_t		once;
-	dispatch_once(&once, ^{ MBMAuthorizationCreationQueue = dispatch_queue_create("com.littleknownsoftware.MBMAuthorizationCreation", NULL); });
+	dispatch_once(&once, ^{ LKAuthorizationCreationQueue = dispatch_queue_create("com.littleknownsoftware.LKAuthorizationCreation", NULL); });
 	
 	//	Create our authorization if we don't have one (use a block here)
 	__block OSStatus authStat = errAuthorizationDenied;
-	dispatch_sync(MBMAuthorizationCreationQueue, ^{
-		if (MBMAuthorization == NULL) {
+	dispatch_sync(LKAuthorizationCreationQueue, ^{
+		if (LKAuthorization == NULL) {
 			while (authStat == errAuthorizationDenied) {
-				authStat = AuthorizationCreate(NULL, kAuthorizationEmptyEnvironment, kAuthorizationFlagDefaults, &MBMAuthorization);
+				authStat = AuthorizationCreate(NULL, kAuthorizationEmptyEnvironment, kAuthorizationFlagDefaults, &LKAuthorization);
 			}
 			
 			//	If the auth was successful, set up a timer to deauthorize soon
@@ -204,7 +204,7 @@ static	dispatch_queue_t	MBMAuthorizationCreationQueue = NULL;
 			}
 			else {
 				//	Reset the Authorization to NULL to be sure
-				MBMAuthorization = NULL;
+				LKAuthorization = NULL;
 			}
 		}
 		else {
@@ -263,7 +263,7 @@ static	dispatch_queue_t	MBMAuthorizationCreationQueue = NULL;
 		}
 		for (; executables[commandIndex] != NULL; ++commandIndex) {
 			if (res) {
-				res = AuthorizationExecuteWithPrivilegesAndWait(MBMAuthorization, executables[commandIndex], kAuthorizationFlagDefaults, argumentLists[commandIndex]);
+				res = AuthorizationExecuteWithPrivilegesAndWait(LKAuthorization, executables[commandIndex], kAuthorizationFlagDefaults, argumentLists[commandIndex]);
 			}
 		}
 		
@@ -289,7 +289,7 @@ static	dispatch_queue_t	MBMAuthorizationCreationQueue = NULL;
 		
 		for (; executables[commandIndex] != NULL; ++commandIndex) {
 			if (res) {
-				res = AuthorizationExecuteWithPrivilegesAndWait(MBMAuthorization, executables[commandIndex], kAuthorizationFlagDefaults, argumentLists[commandIndex]);
+				res = AuthorizationExecuteWithPrivilegesAndWait(LKAuthorization, executables[commandIndex], kAuthorizationFlagDefaults, argumentLists[commandIndex]);
 			}
 		}
 		
