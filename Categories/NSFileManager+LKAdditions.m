@@ -10,6 +10,7 @@
 #import "NSString+LKHelper.h"
 
 #import <sys/stat.h>
+#import <sys/xattr.h>
 
 
 #define AUTH_EXPIRATION_TIME	(60 * 60 * 5)	//	5 minutes
@@ -29,7 +30,7 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 - (void)deauthorize:(NSTimer *)theTimer;
 - (BOOL)fileMoveWithAuthenticationIfNeededFromPath:(NSString *)fromPath toPath:(NSString *)toPath shouldCopy:(BOOL)shouldCopy overwrite:(BOOL)shouldOverwrite error:(NSError **)error;
 - (BOOL)executeWithForcedAuthenticationFromPath:(NSString *)src toPath:(NSString *)dst shouldCopy:(BOOL)shouldCopy error:(NSError **)error;
-- (void)releaseFromQuarantine:(NSString*)root;
+- (int)removeXAttr:(const char*)name fromFile:(NSString*)file options:(int)options;
 @end
 
 
@@ -53,14 +54,40 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 	return [self fileMoveWithAuthenticationIfNeededFromPath:fromPath toPath:toPath shouldCopy:YES overwrite:shouldOverwrite error:error];
 }
 
+- (void)releaseFromQuarantine:(NSString*)root {
+	
+	const char* quarantineAttribute = "com.apple.quarantine";
+	const int removeXAttrOptions = XATTR_NOFOLLOW;
+	
+	[self removeXAttr:quarantineAttribute
+			 fromFile:root
+			  options:removeXAttrOptions];
+	
+	// Only recurse if it's actually a directory.  Don't recurse into a
+	// root-level symbolic link.
+	NSDictionary* rootAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:root error:nil];
+	NSString* rootType = [rootAttributes objectForKey:NSFileType];
+	
+	if (rootType == NSFileTypeDirectory) {
+		// The NSDirectoryEnumerator will avoid recursing into any contained
+		// symbolic links, so no further type checks are needed.
+		NSDirectoryEnumerator* directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:root];
+		NSString* file = nil;
+		while ((file = [directoryEnumerator nextObject])) {
+			[self removeXAttr:quarantineAttribute
+					 fromFile:[root stringByAppendingPathComponent:file]
+					  options:removeXAttrOptions];
+		}
+	}
+}
+
+
 
 @end
 
 
 
 #pragma mark - Extended Attributes
-
-#import <sys/xattr.h>
 
 @implementation NSFileManager (LKInternal)
 
@@ -340,33 +367,6 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 	}
 	
 	return removexattr_func(path, name, options);
-}
-
-- (void)releaseFromQuarantine:(NSString*)root {
-	
-	const char* quarantineAttribute = "com.apple.quarantine";
-	const int removeXAttrOptions = XATTR_NOFOLLOW;
-	
-	[self removeXAttr:quarantineAttribute
-			 fromFile:root
-			  options:removeXAttrOptions];
-	
-	// Only recurse if it's actually a directory.  Don't recurse into a
-	// root-level symbolic link.
-	NSDictionary* rootAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:root error:nil];
-	NSString* rootType = [rootAttributes objectForKey:NSFileType];
-	
-	if (rootType == NSFileTypeDirectory) {
-		// The NSDirectoryEnumerator will avoid recursing into any contained
-		// symbolic links, so no further type checks are needed.
-		NSDirectoryEnumerator* directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:root];
-		NSString* file = nil;
-		while ((file = [directoryEnumerator nextObject])) {
-			[self removeXAttr:quarantineAttribute
-					 fromFile:[root stringByAppendingPathComponent:file]
-					  options:removeXAttrOptions];
-		}
-	}
 }
 
 @end
