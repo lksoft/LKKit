@@ -155,6 +155,7 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 				case NSFileReadNoPermissionError:
 				case NSFileWriteUnknownError:
 				case NSFileWriteNoPermissionError:
+				case 13:	//	POSIX "permission denied"
 					needsSecureMove = YES;
 					break;
 					
@@ -163,10 +164,11 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 				case NSFileWriteOutOfSpaceError:
 					//	These are also non-solvable errors
 				case NSFileNoSuchFileError:
+				case 2:	//	POSIX "no such file or directory"
 				case NSFileReadNoSuchFileError:
 				case NSFileWriteInvalidFileNameError:
 				case NSFileReadInvalidFileNameError:
-					//	Unkonwn errors
+					//	Unknown errors
 				default:
 					//	Just return the error and write message
 					LKErr(@"Error %@ bundle (enable/disable):%@", (shouldCopy?@"copying":@"moving"), localError);
@@ -183,7 +185,8 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 		LKLog(@"No Access for %@", toPath);
 		//	Otherwise use the authentication mechanism
 		if (![self executeWithForcedAuthenticationFromPath:fromPath toPath:toPath shouldCopy:shouldCopy error:error]) {
-			LKErr(@"Error %@ bundle (enable/disable):%@", (shouldCopy?@"copying":@"moving"), *error);
+			LKErr(@"Error %@ bundle (enable/disable)", (shouldCopy?@"copying":@"moving"));
+			LKErr(@"Error is:%@", *error);
 			return NO;
 		}
 	}
@@ -191,6 +194,7 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 	return YES;
 }
 
+#import <Foundation/FoundationErrors.h>
 
 - (void)deauthorize:(NSTimer *)theTimer {
 	
@@ -291,6 +295,9 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 		for (; executables[commandIndex] != NULL; ++commandIndex) {
 			if (res) {
 				res = AuthorizationExecuteWithPrivilegesAndWait(LKAuthorization, executables[commandIndex], kAuthorizationFlagDefaults, argumentLists[commandIndex]);
+			}
+			else {
+				return NO;
 			}
 		}
 		
