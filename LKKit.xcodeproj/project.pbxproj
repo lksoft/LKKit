@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D2344B2F1520683B005B3B0F /* NSString+LKAnonymizer.m in Sources */ = {isa = PBXBuildFile; fileRef = D2344B2E1520683B005B3B0F /* NSString+LKAnonymizer.m */; };
+		D2344B301520683B005B3B0F /* NSString+LKAnonymizer.m in Sources */ = {isa = PBXBuildFile; fileRef = D2344B2E1520683B005B3B0F /* NSString+LKAnonymizer.m */; };
 		D257E263134F675A000F2C16 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D257E262134F675A000F2C16 /* Foundation.framework */; };
 		D257E26B134F675A000F2C16 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D257E269134F675A000F2C16 /* InfoPlist.strings */; };
 		D257E26E134F675A000F2C16 /* DrawingTests.h in Resources */ = {isa = PBXBuildFile; fileRef = D257E26D134F675A000F2C16 /* DrawingTests.h */; };
@@ -82,6 +84,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		D2344B2D1520683B005B3B0F /* NSString+LKAnonymizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+LKAnonymizer.h"; sourceTree = "<group>"; };
+		D2344B2E1520683B005B3B0F /* NSString+LKAnonymizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+LKAnonymizer.m"; sourceTree = "<group>"; };
 		D257E25D134F675A000F2C16 /* KitTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KitTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D257E262134F675A000F2C16 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		D257E268134F675A000F2C16 /* KitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "KitTests-Info.plist"; sourceTree = "<group>"; };
@@ -287,6 +291,8 @@
 				D257E283134F690E000F2C16 /* NSString+LKStructUtils.m */,
 				D264350F13533D3C006C7A08 /* NSString+LKHelper.h */,
 				D264351013533D3C006C7A08 /* NSString+LKHelper.m */,
+				D2344B2D1520683B005B3B0F /* NSString+LKAnonymizer.h */,
+				D2344B2E1520683B005B3B0F /* NSString+LKAnonymizer.m */,
 				D264351613534A56006C7A08 /* OrdinalMappings.plist */,
 				D257E284134F690E000F2C16 /* UITableView+LKCategory.h */,
 				D257E285134F690E000F2C16 /* UITableView+LKCategory.m */,
@@ -593,6 +599,7 @@
 				D2730FED142A1F0300EB5CB7 /* LKCGStructs.m in Sources */,
 				D2D1E6C41430792E002FF1B1 /* LKError.m in Sources */,
 				D2EB8252148FA75700C8B0DB /* NSViewController+LKCollectionItemFix.m in Sources */,
+				D2344B2F1520683B005B3B0F /* NSString+LKAnonymizer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -624,6 +631,7 @@
 				D2D1E6D114313118002FF1B1 /* NSString+LKHelper.m in Sources */,
 				D2D1E6D214313151002FF1B1 /* NSDate+LKHelpers.m in Sources */,
 				D2D1E6D31431315F002FF1B1 /* NSLocale+LKHelpers.m in Sources */,
+				D2344B301520683B005B3B0F /* NSString+LKAnonymizer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
