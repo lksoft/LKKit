@@ -96,6 +96,9 @@
 	// Befor going any further...
 	if (failed) {
 		LKErr(errorFlag);
+		if (msgBuffer != NULL) {
+			free(msgBuffer);
+		}
 		return nil;
 	}
 	

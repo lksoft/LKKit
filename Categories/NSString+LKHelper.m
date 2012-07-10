@@ -112,7 +112,7 @@ NSString	*const	kLKPlaceholderNamedClose = @">@";
 	NSArray	*placeholderList = [self placeholderPositions];
 	for (NSNumber *aPosition in placeholderList) {
 		NSUInteger	idx = [aPosition integerValue];
-		NSString	*fullPlaceholder = [NSString stringWithFormat:@"%@%d%@", kLKPlaceholderOpen, idx, kLKPlaceholderPositionalClose];
+		NSString	*fullPlaceholder = [NSString stringWithFormat:@"%@%@%@", kLKPlaceholderOpen, [NSNumber numberWithInteger:idx], kLKPlaceholderPositionalClose];
 		if ([array count] >= idx) {
 			NSRange	aRange = [newSelf rangeOfString:fullPlaceholder];
 			[newSelf replaceCharactersInRange:aRange withString:[array objectAtIndex:(idx-1)]];

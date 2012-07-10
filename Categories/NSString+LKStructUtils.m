@@ -48,7 +48,7 @@
 }
 
 + (NSString *)stringWithRange:(NSRange)range {
-	return [NSString stringWithFormat:@"[loc:%u,len:%u]", range.location, range.length];
+	return [NSString stringWithFormat:@"[loc:%@,len:%@]", [NSNumber numberWithInteger:range.location], [NSNumber numberWithInteger:range.length]];
 }
 
 

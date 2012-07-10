@@ -17,10 +17,10 @@
 #define FORMAT_SUGGESTION_VALUES_SELECTOR_NAME	@"formatSuggestionValuesForError:"
 #define ERROR_DOMAIN_SELECTOR_NAME				@"overrideErrorDomainForCode:"
 
-#define DESCRIPTION_FORMAT			@"%d-description"
-#define FAILURE_REASON_FORMAT		@"%d-failure-reason"
-#define RECOVERY_SUGGESTION_FORMAT	@"%d-recovery-suggestion"
-#define RECOVERY_OPTIONS_FORMAT		@"%%d-button-%d"
+#define DESCRIPTION_FORMAT			@"%@-description"
+#define FAILURE_REASON_FORMAT		@"%@-failure-reason"
+#define RECOVERY_SUGGESTION_FORMAT	@"%@-recovery-suggestion"
+#define RECOVERY_OPTIONS_FORMAT		@"%%@-button-%@"
 
 @interface LKError ()
 @end
@@ -103,7 +103,7 @@
 	
 	//	Loop to find all buttons
 	for (NSInteger i = 1;; i++) {
-		NSString	*format = [NSString stringWithFormat:RECOVERY_OPTIONS_FORMAT, i];
+		NSString	*format = [NSString stringWithFormat:RECOVERY_OPTIONS_FORMAT, [NSNumber numberWithInteger:i]];
 		NSString	*compareValue = [NSString stringWithFormat:format, [self code]];
 		NSString	*value = [self localizeWithFormat:format];
 		//	If it wasn't found, there are no more options
@@ -136,17 +136,17 @@
 
 - (NSString *)localizeWithFormat:(NSString *)format forCode:(NSInteger)aCode andValuesSelector:(SEL)valueSelector {
 	NSInteger	myCode = (aCode == 0)?[self code]:aCode;
-	NSString	*keyName = [NSString stringWithFormat:format, myCode];
+	NSString	*keyName = [NSString stringWithFormat:format, [NSNumber numberWithInteger:myCode]];
 	NSString	*localized = NSLocalizedStringFromTable(keyName, kLKErrorTableName, @"");
 
 	//	If we didn't get a value, try a grouped value
-	if ([localized hasPrefix:[NSString stringWithFormat:@"%d", myCode]]) {
+	if ([localized hasPrefix:[NSString stringWithFormat:@"%@", [NSNumber numberWithInteger:myCode]]]) {
 		//	If we didn't find a real value, then try getting a generic value
 		NSInteger	floored = [self code] - ([self code] % 100);
-		keyName = [NSString stringWithFormat:format, floored];
+		keyName = [NSString stringWithFormat:format, [NSNumber numberWithInteger:floored]];
 		localized = NSLocalizedStringFromTable(keyName, kLKErrorTableName, @"");
 		//	Again test, though this time return nil, if not found
-		if ([localized hasPrefix:[NSString stringWithFormat:@"%d", floored]]) {
+		if ([localized hasPrefix:[NSString stringWithFormat:@"%@", [NSNumber numberWithInteger:floored]]]) {
 			localized = nil;
 		}
 	}
