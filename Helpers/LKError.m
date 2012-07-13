@@ -104,7 +104,7 @@
 	//	Loop to find all buttons
 	for (NSInteger i = 1;; i++) {
 		NSString	*format = [NSString stringWithFormat:RECOVERY_OPTIONS_FORMAT, [NSNumber numberWithInteger:i]];
-		NSString	*compareValue = [NSString stringWithFormat:format, [self code]];
+		NSString	*compareValue = [NSString stringWithFormat:format, [NSNumber numberWithInteger:[self code]]];
 		NSString	*value = [self localizeWithFormat:format];
 		//	If it wasn't found, there are no more options
 		if ((value == nil) || [compareValue isEqualToString:value]) {
