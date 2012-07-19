@@ -14,6 +14,7 @@
 - (NSString *)localizeWithFormat:(NSString *)format forCode:(NSInteger)aCode andValuesSelector:(SEL)valueSelector;
 
 - (NSArray *)localizedRecoveryOptionList;
+- (SEL)recoveryActionSelector;
 
 + (LKError *)lkErrorWithCode:(NSInteger)aCode fromSender:(id)sender;
 + (LKError *)lkErrorWithCode:(NSInteger)aCode fromSender:(id)sender userInfo:(NSDictionary *)userDict;

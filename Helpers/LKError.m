@@ -20,6 +20,7 @@
 #define DESCRIPTION_FORMAT			@"%@-description"
 #define FAILURE_REASON_FORMAT		@"%@-failure-reason"
 #define RECOVERY_SUGGESTION_FORMAT	@"%@-recovery-suggestion"
+#define RECOVERY_SELECTOR_FORMAT	@"%@-recovery-selector"
 #define RECOVERY_OPTIONS_FORMAT		@"%%@-button-%@"
 
 @interface LKError ()
@@ -115,6 +116,11 @@
 	
 	//	If the options are not empty, return them
 	return IsEmpty(options)?nil:[NSArray arrayWithArray:options];
+}
+
+- (SEL)recoveryActionSelector {
+	NSString	*localized = [self localizeWithFormat:RECOVERY_SELECTOR_FORMAT];
+	return NSSelectorFromString(localized);
 }
 
 - (id)recoveryAttempter {
