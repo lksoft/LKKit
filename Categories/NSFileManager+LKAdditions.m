@@ -11,6 +11,9 @@
 
 #import <sys/stat.h>
 #import <sys/xattr.h>
+#import <objc/runtime.h>
+
+static	char	*LKAuthorizationDelegateName = "LK_AuthDelegate";
 
 
 #define AUTH_EXPIRATION_TIME	(60 * 60 * 5)	//	5 minutes
@@ -26,7 +29,7 @@ static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authoriza
 static	AuthorizationRef	LKAuthorization = NULL;
 static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 
-@interface NSFileManager (LKInternal)
+@interface NSFileManager (LKPrivate) 
 - (void)deauthorize:(NSTimer *)theTimer;
 - (BOOL)fileMoveWithAuthenticationIfNeededFromPath:(NSString *)fromPath toPath:(NSString *)toPath shouldCopy:(BOOL)shouldCopy overwrite:(BOOL)shouldOverwrite error:(NSError **)error;
 - (BOOL)executeWithForcedAuthenticationFromPath:(NSString *)src toPath:(NSString *)dst shouldCopy:(BOOL)shouldCopy error:(NSError **)error;
@@ -35,6 +38,15 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 
 
 @implementation NSFileManager (LKAdditions)
+
+- (NSObject <LKFileManagerSecurityDelegate> *)authorizationDelegate {
+	id	myDelegate = objc_getAssociatedObject(self, LKAuthorizationDelegateName);
+	return (NSObject <LKFileManagerSecurityDelegate> *)myDelegate;
+}
+
+- (void)setAuthorizationDelegate:(NSObject<LKFileManagerSecurityDelegate> *)authorizationDelegate {
+	objc_setAssociatedObject(self, LKAuthorizationDelegateName, authorizationDelegate, OBJC_ASSOCIATION_ASSIGN);
+}
 
 #pragma mark - Authentication External Methods
 
@@ -225,7 +237,25 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 	dispatch_sync(LKAuthorizationCreationQueue, ^{
 		if (LKAuthorization == NULL) {
 			while (authStat == errAuthorizationDenied) {
-				authStat = AuthorizationCreate(NULL, kAuthorizationEmptyEnvironment, kAuthorizationFlagDefaults, &LKAuthorization);
+				AuthorizationItemSet	authSet;
+				authSet.count = 0;
+				authSet.items = NULL;
+				if (self.authorizationDelegate != nil) {
+					AuthorizationItem		authItems[2];
+					authItems[0].name = kAuthorizationEnvironmentUsername;
+					authItems[0].value = (void *)[[self.authorizationDelegate authenticationUsernameForPath:src] UTF8String];
+					authItems[0].valueLength = strlen(authItems[0].value);
+					authItems[0].flags = 0;
+					authItems[1].name = kAuthorizationEnvironmentPassword;
+					authItems[1].value = (void *)[[self.authorizationDelegate authenticationPasswordForPath:src] UTF8String];
+					authItems[1].valueLength = strlen(authItems[1].value);
+					authItems[1].flags = 0;
+					authSet.count = 2;
+					authSet.items = authItems;
+				}
+				AuthorizationItem	rightItem = {kAuthorizationRightExecute, 0, NULL, 0};
+				AuthorizationRights	authRights = {1, &rightItem};
+				authStat = AuthorizationCreate(&authRights, &authSet, kAuthorizationFlagDefaults, &LKAuthorization);
 			}
 			
 			//	If the auth was successful, set up a timer to deauthorize soon
