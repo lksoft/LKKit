@@ -210,7 +210,7 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 
 - (void)deauthorize:(NSTimer *)theTimer {
 	
-	LKAssert(LKAuthorizationCreationQueue != NULL, @"The Authorization queue is not valid inside a deauthorize call");
+	LKAssert(LKAuthorizationCreationQueue == NULL, @"The Authorization queue is not valid inside a deauthorize call");
 	
 	dispatch_sync(LKAuthorizationCreationQueue, ^{
 		if (LKAuthorization != NULL) {
