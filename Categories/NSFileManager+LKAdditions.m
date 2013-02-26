@@ -236,7 +236,7 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 	__block OSStatus authStat = errAuthorizationDenied;
 	dispatch_sync(LKAuthorizationCreationQueue, ^{
 		if (LKAuthorization == NULL) {
-			while (authStat == errAuthorizationDenied) {
+//			while (authStat == errAuthorizationDenied) {
 				AuthorizationItemSet	authSet;
 				authSet.count = 0;
 				authSet.items = NULL;
@@ -256,7 +256,7 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 				AuthorizationItem	rightItem = {kAuthorizationRightExecute, 0, NULL, 0};
 				AuthorizationRights	authRights = {1, &rightItem};
 				authStat = AuthorizationCreate(&authRights, &authSet, kAuthorizationFlagDefaults, &LKAuthorization);
-			}
+//			}
 			
 			//	If the auth was successful, set up a timer to deauthorize soon
 			if (authStat == errAuthorizationSuccess) {
