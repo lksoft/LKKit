@@ -198,7 +198,7 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 		//	Otherwise use the authentication mechanism
 		if (![self executeWithForcedAuthenticationFromPath:fromPath toPath:toPath shouldCopy:shouldCopy error:error]) {
 			LKErr(@"Error %@ bundle (enable/disable)", (shouldCopy?@"copying":@"moving"));
-			LKErr(@"Error is:%@", *error);
+//			LKErr(@"Error is:%@", *error);
 			return NO;
 		}
 	}
@@ -211,6 +211,9 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 - (void)deauthorize:(NSTimer *)theTimer {
 	
 	LKAssert(LKAuthorizationCreationQueue == NULL, @"The Authorization queue is not valid inside a deauthorize call");
+	if (LKAuthorizationCreationQueue == nil) {
+		return;
+	}
 	
 	dispatch_sync(LKAuthorizationCreationQueue, ^{
 		if (LKAuthorization != NULL) {
