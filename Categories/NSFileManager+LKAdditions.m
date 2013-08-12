@@ -206,6 +206,96 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 	return YES;
 }
 
+
+#pragma mark - XPC Stuff
+
+#import <ServiceManagement/ServiceManagement.h>
+#import <Security/Authorization.h>
+
+
+- (BOOL)executeWithXPCAuthenticationFromPath:(NSString *)src toPath:(NSString *)dst shouldCopy:(BOOL)shouldCopy error:(NSError **)error {
+
+	if (![self blessHelperWithLabel:@"com.littleknownsoftware.MailPluginTool.CopyMoveHelper" error:error]) {
+		NSLog(@"Failed to bless helper. Error: %@", *error);
+		return NO;
+	}
+	
+	
+	xpc_connection_t connection = xpc_connection_create_mach_service("com.littleknownsoftware.MailPluginTool.CopyMoveHelper", NULL, XPC_CONNECTION_MACH_SERVICE_PRIVILEGED);
+	
+	if (!connection) {
+		NSLog(@"Failed to create XPC connection.");
+		return NO;
+	}
+	
+	xpc_connection_set_event_handler(connection, ^(xpc_object_t event) {
+		xpc_type_t type = xpc_get_type(event);
+		
+		if (type == XPC_TYPE_ERROR) {
+			
+			if (event == XPC_ERROR_CONNECTION_INTERRUPTED) {
+				NSLog(@"XPC connection interupted.");
+				
+			} else if (event == XPC_ERROR_CONNECTION_INVALID) {
+				NSLog(@"XPC connection invalid, releasing.");
+				xpc_release(connection);
+				
+			} else {
+				NSLog(@"Unexpected XPC connection error.");
+			}
+			
+		} else {
+			NSLog(@"Unexpected XPC connection event.");
+		}
+	});
+	
+	xpc_connection_resume(connection);
+	
+	xpc_object_t message = xpc_dictionary_create(NULL, NULL, 0);
+	xpc_dictionary_set_string(message, "sourcePath", [src UTF8String]);
+	xpc_dictionary_set_string(message, "destPath", [dst UTF8String]);
+	xpc_dictionary_set_bool(message, "shouldCopy", (bool)shouldCopy);
+
+	xpc_object_t event;
+	event = xpc_connection_send_message_with_reply_sync(connection, message);
+
+	BOOL wasSuccessful = (BOOL)xpc_dictionary_get_bool(event, "reply");
+
+	return wasSuccessful;
+}
+
+
+- (BOOL)blessHelperWithLabel:(NSString *)label error:(NSError **)error {
+    
+	BOOL result = NO;
+	
+	AuthorizationItem	authItem	= { kSMRightBlessPrivilegedHelper, 0, NULL, 0 };
+	AuthorizationRights	authRights	= { 1, &authItem };
+//	AuthorizationFlags	flags		=	kAuthorizationFlagDefaults | kAuthorizationFlagInteractionAllowed | kAuthorizationFlagPreAuthorize | kAuthorizationFlagExtendRights;
+	AuthorizationFlags	flags		=	kAuthorizationFlagDefaults | kAuthorizationFlagExtendRights;
+	
+	AuthorizationRef authRef = NULL;
+	
+	/* Obtain the right to install privileged helper tools (kSMRightBlessPrivilegedHelper). */
+	OSStatus	status = AuthorizationCreate(&authRights, kAuthorizationEmptyEnvironment, flags, &authRef);
+	if (status != errAuthorizationSuccess) {
+		NSLog(@"Failed to create AuthorizationRef. Error code: %d", (int)status);
+		
+	} else {
+		/* This does all the work of verifying the helper tool against the application
+		 * and vice-versa. Once verification has passed, the embedded launchd.plist
+		 * is extracted and placed in /Library/LaunchDaemons and then loaded. The
+		 * executable is placed in /Library/PrivilegedHelperTools.
+		 */
+		result = SMJobBless(kSMDomainSystemLaunchd, (CFStringRef)label, authRef, (CFErrorRef *)error);
+	}
+	
+	return result;
+}
+
+
+
+
 #import <Foundation/FoundationErrors.h>
 
 - (void)deauthorize:(NSTimer *)theTimer {
