@@ -237,7 +237,7 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 	static dispatch_once_t onceToken;
 	dispatch_once(&onceToken, ^{
 		if (label == nil) {
-			NSDictionary	*helpers = [[NSApp infoDictionary] objectForKey:@"SMPrivilegedExecutables"];
+			NSDictionary	*helpers = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"SMPrivilegedExecutables"];
 			for (NSString *key in [helpers allKeys]) {
 				if ([key hasPrefix:@"com.littleknownsoftware.MPC.CopyMoveHelper"]) {
 					label = [key copy];
