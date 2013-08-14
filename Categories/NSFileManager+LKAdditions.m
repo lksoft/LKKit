@@ -195,10 +195,27 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 	
 	if (needsSecureMove) {
 		LKLog(@"No Access for %@", toPath);
-		//	Otherwise use the authentication mechanism
-		if (![self executeWithForcedAuthenticationFromPath:fromPath toPath:toPath shouldCopy:shouldCopy error:error]) {
+		
+		// use a static because we only really need to get the version once.
+		static NSInteger minVersion = 0;  // 0 == notSet
+		if (minVersion == 0) {
+			SInt32 version = 0;
+			OSErr err = Gestalt(gestaltSystemVersionMinor, &version);
+			if (!err) {
+				minVersion = (NSInteger)version;
+			}
+		}
+		
+		BOOL	didAuthenticatedCopy = NO;
+		if (minVersion > 6) {
+			didAuthenticatedCopy = [self executeWithXPCAuthenticationFromPath:fromPath toPath:toPath shouldCopy:shouldCopy error:error];
+		}
+		else {
+			didAuthenticatedCopy = [self executeWithForcedAuthenticationFromPath:fromPath toPath:toPath shouldCopy:shouldCopy error:error];
+		}
+		
+		if (!didAuthenticatedCopy) {
 			LKErr(@"Error %@ bundle (enable/disable)", (shouldCopy?@"copying":@"moving"));
-//			LKErr(@"Error is:%@", *error);
 			return NO;
 		}
 	}
