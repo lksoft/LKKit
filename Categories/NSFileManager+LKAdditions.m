@@ -22,6 +22,7 @@ static	char	*LKAuthorizationDelegateName = "LK_AuthDelegate";
 
 NSInteger	const	kLKAuthenticationFailure = 30001;
 NSInteger	const	kLKAuthenticationNotGiven = 30002;
+NSInteger	const	kLKXPCCopyingFailure = 30003;
 
 //	Function to authorize
 static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authorization, const char* executablePath, AuthorizationFlags options, const char* const* arguments);
@@ -305,7 +306,7 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 		wasSuccessful = (BOOL)xpc_dictionary_get_bool(event, "reply");
 		if (!wasSuccessful) {
 			NSString	*errorMessage = [NSString stringWithUTF8String:xpc_dictionary_get_string(event, "error")];
-			NSError		*newError = [NSError errorWithDomain:@"COPYERROR" code:980 userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
+			NSError		*newError = [NSError errorWithDomain:kLKErrorDomain code:kLKXPCCopyingFailure userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
 			*error = newError;
 		}
 	});
@@ -333,7 +334,10 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 	/* Obtain the right to install privileged helper tools (kSMRightBlessPrivilegedHelper). */
 	OSStatus	status = AuthorizationCreate(&authRights, kAuthorizationEmptyEnvironment, flags, &authRef);
 	if (status != errAuthorizationSuccess) {
+		NSString	*errorMessage = [NSString stringWithFormat:@"Failed to create AuthorizationRef. Error code: %d", (int)status];
 		NSLog(@"Failed to create AuthorizationRef. Error code: %d", (int)status);
+		NSError		*newError = [NSError errorWithDomain:kLKErrorDomain code:kLKAuthenticationNotGiven userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
+		*error = newError;
 		
 	} else {
 		/* This does all the work of verifying the helper tool against the application
