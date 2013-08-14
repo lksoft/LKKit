@@ -208,7 +208,7 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 		
 		BOOL	didAuthenticatedCopy = NO;
 		if (minVersion > 6) {
-			didAuthenticatedCopy = [self executeWithXPCAuthenticationFromPath:fromPath toPath:toPath shouldCopy:shouldCopy error:error];
+			didAuthenticatedCopy = [self executeWithXPCAuthenticationFromPath:fromPath toPath:toPath shouldCopy:shouldCopy shouldOverwrite:shouldOverwrite error:error];
 		}
 		else {
 			didAuthenticatedCopy = [self executeWithForcedAuthenticationFromPath:fromPath toPath:toPath shouldCopy:shouldCopy error:error];
@@ -230,15 +230,15 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 #import <Security/Authorization.h>
 
 
-- (BOOL)executeWithXPCAuthenticationFromPath:(NSString *)src toPath:(NSString *)dst shouldCopy:(BOOL)shouldCopy error:(NSError **)error {
+- (BOOL)executeWithXPCAuthenticationFromPath:(NSString *)src toPath:(NSString *)dst shouldCopy:(BOOL)shouldCopy shouldOverwrite:(BOOL)shouldOverwrite error:(NSError **)error {
 
-	if (![self blessHelperWithLabel:@"com.littleknownsoftware.MailPluginTool.CopyMoveHelper" error:error]) {
+	if (![self blessHelperWithLabel:@"com.littleknownsoftware.MPC.CopyMoveHelper" error:error]) {
 		NSLog(@"Failed to bless helper. Error: %@", *error);
 		return NO;
 	}
 	
 	
-	xpc_connection_t connection = xpc_connection_create_mach_service("com.littleknownsoftware.MailPluginTool.CopyMoveHelper", NULL, XPC_CONNECTION_MACH_SERVICE_PRIVILEGED);
+	xpc_connection_t connection = xpc_connection_create_mach_service("com.littleknownsoftware.MPC.CopyMoveHelper", NULL, XPC_CONNECTION_MACH_SERVICE_PRIVILEGED);
 	
 	if (!connection) {
 		NSLog(@"Failed to create XPC connection.");
@@ -272,11 +272,17 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 	xpc_dictionary_set_string(message, "sourcePath", [src UTF8String]);
 	xpc_dictionary_set_string(message, "destPath", [dst UTF8String]);
 	xpc_dictionary_set_bool(message, "shouldCopy", (bool)shouldCopy);
+	xpc_dictionary_set_bool(message, "shouldOverwrite", (bool)shouldOverwrite);
 
 	xpc_object_t event;
 	event = xpc_connection_send_message_with_reply_sync(connection, message);
 
 	BOOL wasSuccessful = (BOOL)xpc_dictionary_get_bool(event, "reply");
+	if (!wasSuccessful) {
+		NSString	*errorMessage = [NSString stringWithUTF8String:xpc_dictionary_get_string(event, "error")];
+		NSError		*newError = [NSError errorWithDomain:@"COPYERROR" code:980 userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
+		*error = newError;
+	}
 
 	return wasSuccessful;
 }
@@ -288,8 +294,7 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 	
 	AuthorizationItem	authItem	= { kSMRightBlessPrivilegedHelper, 0, NULL, 0 };
 	AuthorizationRights	authRights	= { 1, &authItem };
-//	AuthorizationFlags	flags		=	kAuthorizationFlagDefaults | kAuthorizationFlagInteractionAllowed | kAuthorizationFlagPreAuthorize | kAuthorizationFlagExtendRights;
-	AuthorizationFlags	flags		=	kAuthorizationFlagDefaults | kAuthorizationFlagExtendRights;
+	AuthorizationFlags	flags		=	kAuthorizationFlagDefaults | kAuthorizationFlagInteractionAllowed | kAuthorizationFlagPreAuthorize | kAuthorizationFlagExtendRights;
 	
 	AuthorizationRef authRef = NULL;
 	
