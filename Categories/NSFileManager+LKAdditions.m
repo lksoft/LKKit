@@ -9,6 +9,7 @@
 #import "NSFileManager+LKAdditions.h"
 #import "NSString+LKHelper.h"
 
+#import <ServiceManagement/ServiceManagement.h>
 #import <sys/stat.h>
 #import <sys/xattr.h>
 #import <objc/runtime.h>
@@ -237,7 +238,7 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 	static dispatch_once_t onceToken;
 	dispatch_once(&onceToken, ^{
 		if (label == nil) {
-			NSDictionary	*helpers = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"SMPrivilegedExecutables"];
+			NSDictionary	*helpers = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kSMInfoKeyPrivilegedExecutables];
 			for (NSString *key in [helpers allKeys]) {
 				if ([key hasPrefix:@"com.littleknownsoftware.MPC.CopyMoveHelper"]) {
 					label = [key copy];
@@ -296,13 +297,24 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 
 	xpc_object_t event;
 	event = xpc_connection_send_message_with_reply_sync(connection, message);
-
-	BOOL wasSuccessful = (BOOL)xpc_dictionary_get_bool(event, "reply");
-	if (!wasSuccessful) {
-		NSString	*errorMessage = [NSString stringWithUTF8String:xpc_dictionary_get_string(event, "error")];
-		NSError		*newError = [NSError errorWithDomain:@"COPYERROR" code:980 userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
-		*error = newError;
+	
+	BOOL __block	xpcCallFinished = NO;
+	BOOL __block	wasSuccessful = NO;
+	xpc_connection_send_message_with_reply(connection, message, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(xpc_object_t object) {
+		xpcCallFinished = YES;
+		wasSuccessful = (BOOL)xpc_dictionary_get_bool(event, "reply");
+		if (!wasSuccessful) {
+			NSString	*errorMessage = [NSString stringWithUTF8String:xpc_dictionary_get_string(event, "error")];
+			NSError		*newError = [NSError errorWithDomain:@"COPYERROR" code:980 userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
+			*error = newError;
+		}
+	});
+	
+	while (!xpcCallFinished) {
+		[NSThread sleepForTimeInterval:0.1];
 	}
+	
+	xpc_connection_cancel(connection);
 
 	return wasSuccessful;
 }
