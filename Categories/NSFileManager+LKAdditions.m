@@ -232,13 +232,33 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 
 - (BOOL)executeWithXPCAuthenticationFromPath:(NSString *)src toPath:(NSString *)dst shouldCopy:(BOOL)shouldCopy shouldOverwrite:(BOOL)shouldOverwrite error:(NSError **)error {
 
-	if (![self blessHelperWithLabel:@"com.littleknownsoftware.MPC.CopyMoveHelper" error:error]) {
+	//	Get the name from the Info plist
+	static	NSString	*label = nil;
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		if (label == nil) {
+			NSDictionary	*helpers = [[NSApp infoDictionary] objectForKey:@"SMPrivilegedExecutables"];
+			for (NSString *key in [helpers allKeys]) {
+				if ([key hasPrefix:@"com.littleknownsoftware.MPC.CopyMoveHelper"]) {
+					label = [key copy];
+					break;
+				}
+			}
+		}
+	});
+	
+	if (label == nil) {
+		NSLog(@"Could not get the proper label to use");
+		return NO;
+	}
+	
+	if (![self blessHelperWithLabel:label error:error]) {
 		NSLog(@"Failed to bless helper. Error: %@", *error);
 		return NO;
 	}
 	
 	
-	xpc_connection_t connection = xpc_connection_create_mach_service("com.littleknownsoftware.MPC.CopyMoveHelper", NULL, XPC_CONNECTION_MACH_SERVICE_PRIVILEGED);
+	xpc_connection_t connection = xpc_connection_create_mach_service([label UTF8String], NULL, XPC_CONNECTION_MACH_SERVICE_PRIVILEGED);
 	
 	if (!connection) {
 		NSLog(@"Failed to create XPC connection.");
