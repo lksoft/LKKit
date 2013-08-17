@@ -232,6 +232,51 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 #import <Security/Authorization.h>
 
 
+- (void)sendSyncXPCMessage:(xpc_object_t)message forLabel:(NSString *)label replyHandler:(xpc_handler_t)handler {
+	
+	xpc_connection_t connection = xpc_connection_create_mach_service([label UTF8String], NULL, XPC_CONNECTION_MACH_SERVICE_PRIVILEGED);
+	
+	if (!connection) {
+		NSLog(@"Failed to create XPC connection.");
+		return 0;
+	}
+	
+	xpc_connection_set_event_handler(connection, ^(xpc_object_t event) {
+		xpc_type_t type = xpc_get_type(event);
+		
+		if (type == XPC_TYPE_ERROR) {
+			
+			if (event == XPC_ERROR_CONNECTION_INTERRUPTED) {
+				NSLog(@"XPC connection interupted.");
+				
+			} else if (event == XPC_ERROR_CONNECTION_INVALID) {
+				NSLog(@"XPC connection invalid, releasing.");
+				xpc_release(connection);
+				
+			} else {
+				NSLog(@"Unexpected XPC connection error.");
+			}
+			
+		} else {
+			NSLog(@"Unexpected XPC connection event.");
+		}
+	});
+	
+	xpc_connection_resume(connection);
+	
+	BOOL		__block	xpcCallFinished = NO;
+	xpc_connection_send_message_with_reply(connection, message, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(xpc_object_t object) {
+		handler(object);
+		xpcCallFinished = YES;
+	});
+	
+	while (!xpcCallFinished) {
+		[NSThread sleepForTimeInterval:0.05];
+	}
+	
+	xpc_connection_cancel(connection);
+}
+
 - (BOOL)executeWithXPCAuthenticationFromPath:(NSString *)src toPath:(NSString *)dst shouldCopy:(BOOL)shouldCopy shouldOverwrite:(BOOL)shouldOverwrite error:(NSError **)error {
 
 	//	Get the name from the Info plist
@@ -259,71 +304,52 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 		return NO;
 	}
 	
-	
-	xpc_connection_t connection = xpc_connection_create_mach_service([label UTF8String], NULL, XPC_CONNECTION_MACH_SERVICE_PRIVILEGED);
-	
-	if (!connection) {
-		NSLog(@"Failed to create XPC connection.");
-		return NO;
-	}
-	
-	xpc_connection_set_event_handler(connection, ^(xpc_object_t event) {
-		xpc_type_t type = xpc_get_type(event);
-		
-		if (type == XPC_TYPE_ERROR) {
-			
-			if (event == XPC_ERROR_CONNECTION_INTERRUPTED) {
-				NSLog(@"XPC connection interupted.");
-				
-			} else if (event == XPC_ERROR_CONNECTION_INVALID) {
-				NSLog(@"XPC connection invalid, releasing.");
-				xpc_release(connection);
-				
-			} else {
-				NSLog(@"Unexpected XPC connection error.");
-			}
-			
-		} else {
-			NSLog(@"Unexpected XPC connection event.");
-		}
-	});
-	
-	xpc_connection_resume(connection);
-	
 	xpc_object_t message = xpc_dictionary_create(NULL, NULL, 0);
 	xpc_dictionary_set_string(message, "sourcePath", [src UTF8String]);
 	xpc_dictionary_set_string(message, "destPath", [dst UTF8String]);
 	xpc_dictionary_set_bool(message, "shouldCopy", (bool)shouldCopy);
 	xpc_dictionary_set_bool(message, "shouldOverwrite", (bool)shouldOverwrite);
-
-	xpc_object_t event;
-	event = xpc_connection_send_message_with_reply_sync(connection, message);
+	xpc_dictionary_set_bool(message, "getVersion", (bool)NO);
 	
-	BOOL __block	xpcCallFinished = NO;
 	BOOL __block	wasSuccessful = NO;
-	xpc_connection_send_message_with_reply(connection, message, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(xpc_object_t object) {
-		xpcCallFinished = YES;
-		wasSuccessful = (BOOL)xpc_dictionary_get_bool(event, "reply");
+
+	[self sendSyncXPCMessage:message forLabel:label replyHandler:^(xpc_object_t object) {
+		wasSuccessful = (BOOL)xpc_dictionary_get_bool(object, "reply");
 		if (!wasSuccessful) {
-			NSString	*errorMessage = [NSString stringWithUTF8String:xpc_dictionary_get_string(event, "error")];
+			NSString	*errorMessage = [NSString stringWithUTF8String:xpc_dictionary_get_string(object, "error")];
 			NSError		*newError = [NSError errorWithDomain:kLKErrorDomain code:kLKXPCCopyingFailure userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
 			*error = newError;
 		}
-	});
+	}];
 	
-	while (!xpcCallFinished) {
-		[NSThread sleepForTimeInterval:0.1];
-	}
-	
-	xpc_connection_cancel(connection);
-
 	return wasSuccessful;
 }
 
+- (NSUInteger)installedHelperBuildVersionNumberForLabel:(NSString *)label {
+	
+	xpc_object_t message = xpc_dictionary_create(NULL, NULL, 0);
+	xpc_dictionary_set_bool(message, "getVersion", (bool)YES);
+	
+	NSUInteger	__block	buildVersion = 0;
+	[self sendSyncXPCMessage:message forLabel:label replyHandler:^(xpc_object_t object) {
+		buildVersion = (NSUInteger)xpc_dictionary_get_int64(object, "buildVersion");
+	}];
+	
+	return buildVersion;
+}
 
 - (BOOL)blessHelperWithLabel:(NSString *)label error:(NSError **)error {
     
 	BOOL result = NO;
+	CFDictionaryRef	jobDict = SMJobCopyDictionary(kSMDomainSystemLaunchd, (CFStringRef)label);
+	if (jobDict) {
+		
+		NSUInteger	buildNumber = [self installedHelperBuildVersionNumberForLabel:label];
+		if (buildNumber >= [[[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey] integerValue]) {
+			CFRelease(jobDict);
+			return YES;
+		}
+	}
 	
 	AuthorizationItem	authItem	= { kSMRightBlessPrivilegedHelper, 0, NULL, 0 };
 	AuthorizationRights	authRights	= { 1, &authItem };
