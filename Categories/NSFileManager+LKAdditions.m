@@ -206,7 +206,7 @@ NSInteger	const	kLKXPCCopyingFailure = 30003;
 #import <Security/Authorization.h>
 
 
-- (void)sendSyncXPCMessage:(xpc_object_t)message forLabel:(NSString *)label replyHandler:(xpc_handler_t)handler {
+- (void)sendSyncXPCMessage:(xpc_object_t)message forLabel:(NSString *)label timeout:(NSTimeInterval)aTimeout replyHandler:(xpc_handler_t)handler {
 	
 	xpc_connection_t connection = xpc_connection_create_mach_service([label UTF8String], NULL, XPC_CONNECTION_MACH_SERVICE_PRIVILEGED);
 	
@@ -238,14 +238,23 @@ NSInteger	const	kLKXPCCopyingFailure = 30003;
 	
 	xpc_connection_resume(connection);
 	
+	NSLog(@"XPC connection PID:%@", [NSNumber numberWithInt:xpc_connection_get_pid(connection)]);
+	
 	BOOL		__block	xpcCallFinished = NO;
 	xpc_connection_send_message_with_reply(connection, message, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(xpc_object_t object) {
 		handler(object);
 		xpcCallFinished = YES;
 	});
 	
+	if (aTimeout < 0.05) {
+		aTimeout = 10.0;
+	}
+	NSTimeInterval	pollingLimit = [NSDate timeIntervalSinceReferenceDate] + aTimeout;
 	while (!xpcCallFinished) {
 		[NSThread sleepForTimeInterval:0.05];
+		if ([NSDate timeIntervalSinceReferenceDate] > pollingLimit) {
+			xpcCallFinished = YES;
+		}
 	}
 	
 	xpc_connection_cancel(connection);
@@ -287,7 +296,7 @@ NSInteger	const	kLKXPCCopyingFailure = 30003;
 	
 	BOOL __block	wasSuccessful = NO;
 
-	[self sendSyncXPCMessage:message forLabel:label replyHandler:^(xpc_object_t object) {
+	[self sendSyncXPCMessage:message forLabel:label timeout:20.0 replyHandler:^(xpc_object_t object) {
 		wasSuccessful = (BOOL)xpc_dictionary_get_bool(object, "reply");
 		if (!wasSuccessful) {
 			NSString	*errorMessage = [NSString stringWithUTF8String:xpc_dictionary_get_string(object, "error")];
@@ -305,7 +314,7 @@ NSInteger	const	kLKXPCCopyingFailure = 30003;
 	xpc_dictionary_set_bool(message, "getVersion", (bool)YES);
 	
 	NSUInteger	__block	buildVersion = 0;
-	[self sendSyncXPCMessage:message forLabel:label replyHandler:^(xpc_object_t object) {
+	[self sendSyncXPCMessage:message forLabel:label timeout:2.0 replyHandler:^(xpc_object_t object) {
 		buildVersion = (NSUInteger)xpc_dictionary_get_int64(object, "buildVersion");
 	}];
 	
