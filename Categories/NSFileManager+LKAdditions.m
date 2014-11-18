@@ -14,23 +14,14 @@
 #import <sys/xattr.h>
 #import <objc/runtime.h>
 
-static	char	*LKAuthorizationDelegateName = "LK_AuthDelegate";
-
 
 #define AUTH_EXPIRATION_TIME	(60 * 60 * 5)	//	5 minutes
-
 
 NSInteger	const	kLKAuthenticationFailure = 30001;
 NSInteger	const	kLKAuthenticationNotGiven = 30002;
 NSInteger	const	kLKXPCCopyingFailure = 30003;
 NSInteger	const	kLKPrivilegedHelperNotFound = 30004;
 
-//	Function to authorize
-static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authorization, const char* executablePath, AuthorizationFlags options, const char* const* arguments);
-
-//	Static variable to allow for a period of time that the authorization is valid for
-static	AuthorizationRef	LKAuthorization = NULL;
-static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 
 @interface NSFileManager (LKPrivate) 
 - (void)deauthorize:(NSTimer *)theTimer;
@@ -41,15 +32,6 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 
 
 @implementation NSFileManager (LKAdditions)
-
-- (NSObject <LKFileManagerSecurityDelegate> *)authorizationDelegate {
-	id	myDelegate = objc_getAssociatedObject(self, LKAuthorizationDelegateName);
-	return (NSObject <LKFileManagerSecurityDelegate> *)myDelegate;
-}
-
-- (void)setAuthorizationDelegate:(NSObject<LKFileManagerSecurityDelegate> *)authorizationDelegate {
-	objc_setAssociatedObject(self, LKAuthorizationDelegateName, authorizationDelegate, OBJC_ASSOCIATION_ASSIGN);
-}
 
 #pragma mark - Authentication External Methods
 
@@ -209,15 +191,7 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 			}
 		}
 		
-		BOOL	didAuthenticatedCopy = NO;
-		if (minVersion > 6) {
-			didAuthenticatedCopy = [self executeWithXPCAuthenticationFromPath:fromPath toPath:toPath shouldCopy:shouldCopy shouldOverwrite:shouldOverwrite error:error];
-		}
-		else {
-			didAuthenticatedCopy = [self executeWithForcedAuthenticationFromPath:fromPath toPath:toPath shouldCopy:shouldCopy error:error];
-		}
-		
-		if (!didAuthenticatedCopy) {
+		if (![self executeWithXPCAuthenticationFromPath:fromPath toPath:toPath shouldCopy:shouldCopy shouldOverwrite:shouldOverwrite error:error]) {
 			LKErr(@"Error %@ bundle (enable/disable)", (shouldCopy?@"copying":@"moving"));
 			return NO;
 		}
@@ -233,7 +207,7 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 #import <Security/Authorization.h>
 
 
-- (void)sendSyncXPCMessage:(xpc_object_t)message forLabel:(NSString *)label replyHandler:(xpc_handler_t)handler {
+- (void)sendSyncXPCMessage:(xpc_object_t)message forLabel:(NSString *)label timeout:(NSTimeInterval)aTimeout replyHandler:(xpc_handler_t)handler {
 	
 	xpc_connection_t connection = xpc_connection_create_mach_service([label UTF8String], NULL, XPC_CONNECTION_MACH_SERVICE_PRIVILEGED);
 	
@@ -265,14 +239,23 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 	
 	xpc_connection_resume(connection);
 	
+	NSLog(@"XPC connection PID:%@", [NSNumber numberWithInt:xpc_connection_get_pid(connection)]);
+	
 	BOOL		__block	xpcCallFinished = NO;
 	xpc_connection_send_message_with_reply(connection, message, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(xpc_object_t object) {
 		handler(object);
 		xpcCallFinished = YES;
 	});
 	
+	if (aTimeout < 0.05) {
+		aTimeout = 10.0;
+	}
+	NSTimeInterval	pollingLimit = [NSDate timeIntervalSinceReferenceDate] + aTimeout;
 	while (!xpcCallFinished) {
 		[NSThread sleepForTimeInterval:0.05];
+		if ([NSDate timeIntervalSinceReferenceDate] > pollingLimit) {
+			xpcCallFinished = YES;
+		}
 	}
 	
 	xpc_connection_cancel(connection);
@@ -320,7 +303,7 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 	
 	BOOL __block	wasSuccessful = NO;
 
-	[self sendSyncXPCMessage:message forLabel:label replyHandler:^(xpc_object_t object) {
+	[self sendSyncXPCMessage:message forLabel:label timeout:20.0 replyHandler:^(xpc_object_t object) {
 		wasSuccessful = (BOOL)xpc_dictionary_get_bool(object, "reply");
 		if (!wasSuccessful) {
 			NSString	*errorMessage = [NSString stringWithUTF8String:xpc_dictionary_get_string(object, "error")];
@@ -338,7 +321,7 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 	xpc_dictionary_set_bool(message, "getVersion", (bool)YES);
 	
 	NSUInteger	__block	buildVersion = 0;
-	[self sendSyncXPCMessage:message forLabel:label replyHandler:^(xpc_object_t object) {
+	[self sendSyncXPCMessage:message forLabel:label timeout:2.0 replyHandler:^(xpc_object_t object) {
 		buildVersion = (NSUInteger)xpc_dictionary_get_int64(object, "buildVersion");
 	}];
 	
@@ -385,178 +368,6 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 }
 
 
-
-
-#import <Foundation/FoundationErrors.h>
-
-- (void)deauthorize:(NSTimer *)theTimer {
-	
-	LKAssert(LKAuthorizationCreationQueue == NULL, @"The Authorization queue is not valid inside a deauthorize call");
-	if (LKAuthorizationCreationQueue == nil) {
-		return;
-	}
-	
-	dispatch_sync(LKAuthorizationCreationQueue, ^{
-		if (LKAuthorization != NULL) {
-			AuthorizationFree(LKAuthorization, 0);
-			LKAuthorization = NULL;
-		}
-	});
-}
-
-- (BOOL)executeWithForcedAuthenticationFromPath:(NSString *)src toPath:(NSString *)dst shouldCopy:(BOOL)shouldCopy error:(NSError **)error {
-	const char* srcPath = [src fileSystemRepresentation];
-	const char* dstPath = [dst fileSystemRepresentation];
-	
-	//	Get the destinations user info in case it is needed
-	struct stat dstSB;
-	stat(dstPath, &dstSB);
-	
-	//	Create our queue if it hasn't been done already
-	static	dispatch_once_t		once;
-	dispatch_once(&once, ^{ LKAuthorizationCreationQueue = dispatch_queue_create("com.littleknownsoftware.LKAuthorizationCreation", NULL); });
-	
-	//	Create our authorization if we don't have one (use a block here)
-	__block OSStatus authStat = errAuthorizationDenied;
-	dispatch_sync(LKAuthorizationCreationQueue, ^{
-		if (LKAuthorization == NULL) {
-//			while (authStat == errAuthorizationDenied) {
-				AuthorizationItemSet	authSet;
-				authSet.count = 0;
-				authSet.items = NULL;
-				if (self.authorizationDelegate != nil) {
-					AuthorizationItem		authItems[2];
-					authItems[0].name = kAuthorizationEnvironmentUsername;
-					authItems[0].value = (void *)[[self.authorizationDelegate authenticationUsernameForPath:src] UTF8String];
-					authItems[0].valueLength = strlen(authItems[0].value);
-					authItems[0].flags = 0;
-					authItems[1].name = kAuthorizationEnvironmentPassword;
-					authItems[1].value = (void *)[[self.authorizationDelegate authenticationPasswordForPath:src] UTF8String];
-					authItems[1].valueLength = strlen(authItems[1].value);
-					authItems[1].flags = 0;
-					authSet.count = 2;
-					authSet.items = authItems;
-				}
-				AuthorizationItem	rightItem = {kAuthorizationRightExecute, 0, NULL, 0};
-				AuthorizationRights	authRights = {1, &rightItem};
-				authStat = AuthorizationCreate(&authRights, &authSet, kAuthorizationFlagDefaults, &LKAuthorization);
-//			}
-			
-			//	If the auth was successful, set up a timer to deauthorize soon
-			if (authStat == errAuthorizationSuccess) {
-				//	Then create a timer that will release the Authorization in 5 minutes
-				[NSTimer scheduledTimerWithTimeInterval:AUTH_EXPIRATION_TIME target:self selector:@selector(deauthorize:) userInfo:nil repeats:NO];
-			}
-			else {
-				//	Reset the Authorization to NULL to be sure
-				LKAuthorization = NULL;
-			}
-		}
-		else {
-			authStat = errAuthorizationSuccess;
-		}
-	});
-	
-	BOOL res = NO;
-	if (authStat == errAuthorizationSuccess) {
-		res = YES;
-		
-		char uidgid[42];
-		snprintf(uidgid, sizeof(uidgid), "%d:%d",
-				 dstSB.st_uid, dstSB.st_gid);
-		
-		//	Test to see if a destination path exists and set command to remove
-		char	*removeCommand = NULL;
-		char	*chownCommand = NULL;
-		if ([self fileExistsAtPath:dst]) {
-			removeCommand = "/bin/rm";
-			chownCommand = "/usr/sbin/chown";
-		}
-		//	Then set the command for the copy/move
-		char	*executeCommand = "/bin/mv";
-		char	*args = "-f";
-		if (shouldCopy) {
-			executeCommand = "/bin/cp";
-			args = "-Rf";
-		}
-		
-		const char* executables[] = {
-			removeCommand,
-			executeCommand,
-			NULL,  // pause here and do some housekeeping before
-			// continuing
-			chownCommand,
-			NULL   // stop here for real
-		};
-		
-		// 4 is the maximum number of arguments to any command,
-		// including the NULL that signals the end of an argument
-		// list.
-		const char* const argumentLists[][4] = {
-			{ "-rf", dstPath, NULL },  // rm
-			{ args, srcPath, dstPath, NULL },  // mv/cp
-			{ NULL },  // pause
-			{ "-R", uidgid, dstPath, NULL },  // chown
-			{ NULL }  // stop
-		};
-		
-		// Process the commands up until the first NULL
-		unsigned int commandIndex = 0;
-		//	If the removeDest value is NULL, skip the first executable
-		if (removeCommand == NULL) {
-			commandIndex++;
-		}
-		for (; executables[commandIndex] != NULL; ++commandIndex) {
-			if (res) {
-				res = AuthorizationExecuteWithPrivilegesAndWait(LKAuthorization, executables[commandIndex], kAuthorizationFlagDefaults, argumentLists[commandIndex]);
-			}
-			else {
-				return NO;
-			}
-		}
-		
-		// If the currently-running application is trusted, the new
-		// version should be trusted as well.  Remove it from the
-		// quarantine to avoid a delay at launch, and to avoid
-		// presenting the user with a confusing trust dialog.
-		//
-		// This needs to be done after the application is moved to its
-		// new home with "mv" in case it's moved across filesystems: if
-		// that happens, "mv" actually performs a copy and may result
-		// in the application being quarantined.  It also needs to be
-		// done before "chown" changes ownership, because the ownership
-		// change will almost certainly make it impossible to change
-		// attributes to release the files from the quarantine.
-		if (res) {
-			[self performSelectorOnMainThread:@selector(releaseFromQuarantine:) withObject:dst waitUntilDone:YES];
-		}
-		
-		// Now move past the NULL we found and continue executing
-		// commands from the list.
-		++commandIndex;
-		
-		for (; executables[commandIndex] != NULL; ++commandIndex) {
-			if (res) {
-				res = AuthorizationExecuteWithPrivilegesAndWait(LKAuthorization, executables[commandIndex], kAuthorizationFlagDefaults, argumentLists[commandIndex]);
-			}
-		}
-		
-		if (!res)
-		{
-			// Something went wrong somewhere along the way, but we're not sure exactly where.
-			NSString *errorMessage = [NSString stringWithFormat:@"Authenticated file copy from %@ to %@ failed.", src, dst];
-			if (error != nil)
-				*error = [NSError errorWithDomain:kLKErrorDomain code:kLKAuthenticationFailure userInfo:[NSDictionary dictionaryWithObject:errorMessage forKey:NSLocalizedDescriptionKey]];
-		}
-	}
-	else
-	{
-		if (error != nil)
-			*error = [NSError errorWithDomain:kLKErrorDomain code:kLKAuthenticationNotGiven userInfo:[NSDictionary dictionaryWithObject:@"Couldn't get permission to authenticate." forKey:NSLocalizedDescriptionKey]];
-	}
-	return res;
-}
-
 #pragma mark - Extended Attributes
 
 - (int)removeXAttr:(const char*)name fromFile:(NSString*)file options:(int)options {
@@ -591,26 +402,5 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 }
 
 @end
-
-
-#pragma mark - Authentication Helper Function
-
-static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authorization, const char* executablePath, AuthorizationFlags options, const char* const* arguments) {
-	
-	sig_t oldSigChildHandler = signal(SIGCHLD, SIG_DFL);
-	BOOL returnValue = YES;
-	
-	if (AuthorizationExecuteWithPrivileges(authorization, executablePath, options, (char* const*)arguments, NULL) == errAuthorizationSuccess) {
-		int status;
-		pid_t pid = wait(&status);
-		if (pid == -1 || !WIFEXITED(status) || WEXITSTATUS(status) != 0)
-			returnValue = NO;
-	}
-	else
-		returnValue = NO;
-	
-	signal(SIGCHLD, oldSigChildHandler);
-	return returnValue;
-}
 
 

@@ -15,16 +15,8 @@ extern NSInteger	const	kLKPrivilegedHelperNotFound;
 
 #undef STR_CONST_LOCAL
 
-@protocol LKFileManagerSecurityDelegate <NSObject>
-
-- (NSString *)authenticationUsernameForPath:(NSString *)path;
-- (NSString *)authenticationPasswordForPath:(NSString *)path;
-
-@end
 
 @interface NSFileManager (LKAdditions)
-
-@property	(nonatomic, assign)	NSObject <LKFileManagerSecurityDelegate>	*authorizationDelegate;
 
 - (BOOL)moveWithAuthenticationIfNeededFromPath:(NSString *)fromPath toPath:(NSString *)toPath error:(NSError **)error;
 - (BOOL)moveWithAuthenticationIfNeededFromPath:(NSString *)fromPath toPath:(NSString *)toPath overwrite:(BOOL)shouldOverwrite error:(NSError **)error;
