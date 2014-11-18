@@ -8,8 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-NSInteger	const	kLKAuthenticationFailure;
-NSInteger	const	kLKAuthenticationNotGiven;
+extern NSInteger	const	kLKAuthenticationFailure;
+extern NSInteger	const	kLKAuthenticationNotGiven;
+extern NSInteger	const	kLKXPCCopyingFailure;
+extern NSInteger	const	kLKPrivilegedHelperNotFound;
 
 #undef STR_CONST_LOCAL
 

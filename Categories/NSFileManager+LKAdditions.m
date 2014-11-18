@@ -23,6 +23,7 @@ static	char	*LKAuthorizationDelegateName = "LK_AuthDelegate";
 NSInteger	const	kLKAuthenticationFailure = 30001;
 NSInteger	const	kLKAuthenticationNotGiven = 30002;
 NSInteger	const	kLKXPCCopyingFailure = 30003;
+NSInteger	const	kLKPrivilegedHelperNotFound = 30004;
 
 //	Function to authorize
 static BOOL AuthorizationExecuteWithPrivilegesAndWait(AuthorizationRef authorization, const char* executablePath, AuthorizationFlags options, const char* const* arguments);
@@ -284,7 +285,7 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 	static dispatch_once_t onceToken;
 	dispatch_once(&onceToken, ^{
 		if (label == nil) {
-			NSDictionary	*helpers = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kSMInfoKeyPrivilegedExecutables];
+			NSDictionary	*helpers = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"SMPrivilegedExecutables"];
 			for (NSString *key in [helpers allKeys]) {
 				if ([key hasPrefix:@"com.littleknownsoftware.MPC.CopyMoveHelper"]) {
 					label = [key copy];
@@ -294,13 +295,19 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 		}
 	});
 	
+	NSError	*newError = nil;
 	if (label == nil) {
 		NSLog(@"Could not get the proper label to use");
+		newError = [NSError errorWithDomain:kLKErrorDomain code:kLKPrivilegedHelperNotFound userInfo:@{NSLocalizedDescriptionKey: @"Could not find the Privileged Executable for installation over file you don't have access to."}];
+		*error = newError;
 		return NO;
 	}
 	
-	if (![self blessHelperWithLabel:label error:error]) {
-		NSLog(@"Failed to bless helper. Error: %@", *error);
+	NSError	*testError = nil;
+	if (![self blessHelperWithLabel:label error:&testError]) {
+		NSLog(@"Failed to bless helper. Error: %@", testError);
+		newError = [NSError errorWithDomain:kLKErrorDomain code:kLKAuthenticationNotGiven userInfo:@{NSLocalizedDescriptionKey: @"User did not give proper access."}];
+		*error = newError;
 		return NO;
 	}
 	
@@ -317,7 +324,7 @@ static	dispatch_queue_t	LKAuthorizationCreationQueue = NULL;
 		wasSuccessful = (BOOL)xpc_dictionary_get_bool(object, "reply");
 		if (!wasSuccessful) {
 			NSString	*errorMessage = [NSString stringWithUTF8String:xpc_dictionary_get_string(object, "error")];
-			NSError		*newError = [NSError errorWithDomain:kLKErrorDomain code:kLKXPCCopyingFailure userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
+			NSError	*newError = [NSError errorWithDomain:kLKErrorDomain code:kLKXPCCopyingFailure userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
 			*error = newError;
 		}
 	}];
