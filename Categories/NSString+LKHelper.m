@@ -143,9 +143,13 @@ NSString	*const	kLKPlaceholderNamedClose = @">@";
 	NSArray	*placeholderList = [self placeholderNames];
 	for (NSString *aKey in placeholderList) {
 		NSString	*fullPlaceholder = [NSString stringWithFormat:@"%@%@%@", kLKPlaceholderNamedOpen, aKey, kLKPlaceholderNamedClose];
-		if ([dict valueForKey:aKey]) {
+		if (dict[aKey]) {
 			NSRange	aRange = [newSelf rangeOfString:fullPlaceholder];
-			[newSelf replaceCharactersInRange:aRange withString:[dict valueForKey:aKey]];
+			NSString * stringValue = dict[aKey];
+			if ([dict[aKey] isKindOfClass:[NSError class]]) {
+				stringValue = [dict[aKey] localizedDescription];
+			}
+			[newSelf replaceCharactersInRange:aRange withString:stringValue];
 		}
 	}
 	
