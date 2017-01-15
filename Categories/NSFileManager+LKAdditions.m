@@ -213,7 +213,7 @@ NSInteger	const	kLKPrivilegedHelperNotFound = 30004;
 	
 	if (!connection) {
 		NSLog(@"Failed to create XPC connection.");
-		return 0;
+		return;
 	}
 	
 	xpc_connection_set_event_handler(connection, ^(xpc_object_t event) {
